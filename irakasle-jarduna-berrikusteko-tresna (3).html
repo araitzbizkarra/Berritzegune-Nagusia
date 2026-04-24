@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+
+<html lang="eu">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Irakasle jarduna berrikusteko tresna</title>
+<style>
+:root{
+  --blue:#00558C;
+  --blue-dark:#003F68;
+  --green:#92D050;
+  --green-dark:#6EAA32;
+  --bg:#f3f6f8;
+  --card:#ffffff;
+  --line:#cfdbe5;
+  --ink:#1f2a35;
+  --muted:#64707c;
+  --soft:#eaf2f7;
+  --soft-green:#edf7e4;
+  --cream:#f8fbfd;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:Calibri, Arial, sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
+button,input,textarea{font:inherit}
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:50;
+  background:rgba(244,247,250,.96);
+  backdrop-filter:saturate(140%) blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-inner{
+  max-width:1460px;
+  margin:0 auto;
+  padding:12px 18px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+}
+.brand h1{
+  margin:0;
+  font-size:1.05rem;
+  line-height:1.15;
+}
+.brand p{
+  margin:2px 0 0;
+  color:var(--muted);
+  font-size:.85rem;
+}
+.top-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:flex-end;
+}
+button{
+  appearance:none;
+  border:1px solid transparent;
+  border-radius:999px;
+  padding:9px 14px;
+  cursor:pointer;
+  transition:.18s ease;
+}
+.btn-primary{
+  background:var(--green);
+  color:#16310a;
+  font-weight:700;
+}
+.btn-primary:hover{background:var(--green-dark); color:#fff}
+.btn-secondary{
+  background:#fff;
+  border-color:var(--line);
+  color:#2a465e;
+}
+.btn-secondary:hover{background:#eef4f8}
+.layout{
+  max-width:1460px;
+  margin:0 auto;
+  padding:16px 18px 28px;
+}
+.meta-card,.tabs-card,.panel,.summary-panel{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:18px;
+}
+.meta-card{
+  padding:14px;
+  margin-bottom:12px;
+}
+.meta-grid{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:10px;
+}
+.field{
+  min-width:0;
+}
+.field.wide{grid-column:span 2}
+.field.full{grid-column:1/-1}
+.field label{
+  display:block;
+  font-size:.85rem;
+  font-weight:700;
+  margin:0 0 6px;
+}
+.bilingual{display:flex; flex-direction:column; gap:1px}
+.eu{font-weight:700}
+.es{font-size:.82rem; color:var(--muted); font-weight:500}
+
+.lang-switch{
+  display:flex;
+  gap:6px;
+  padding:4px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  background:#fff;
+}
+.lang-switch button{
+  border:0;
+  border-radius:999px;
+  padding:7px 12px;
+  cursor:pointer;
+  background:transparent;
+  color:var(--blue-dark);
+  font-weight:800;
+  font-size:.82rem;
+}
+.lang-switch button.active{
+  background:var(--blue);
+  color:#fff;
+}
+body.lang-eu .es{display:none !important}
+body.lang-es .eu{display:none !important}
+body.lang-es .brand h1 .es{display:inline !important}
+body.lang-eu .brand h1 .eu{display:inline !important}
+
+.field input,.field textarea{
+  width:100%;
+  border:1px solid #cdd8e2;
+  border-radius:12px;
+  padding:8px 10px;
+  background:#fff;
+}
+.field textarea{
+  min-height:62px;
+  resize:vertical;
+}
+.tabs-card{
+  padding:10px;
+  margin-bottom:12px;
+}
+.tabs{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:8px;
+}
+.tab-btn{
+  background:#fff;
+  border:1px solid var(--line);
+  color:#2c4a62;
+  padding:9px 10px;
+  border-radius:10px;
+  font-weight:700;
+  min-height:62px;
+  text-align:left;
+  box-shadow:0 1px 0 rgba(4,98,155,.06);
+}
+.tab-btn .tab-index{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:22px;
+  height:22px;
+  margin-right:6px;
+  border-radius:999px;
+  background:var(--blue);
+  color:#fff;
+  font-size:.76rem;
+}
+.tab-btn.summary-tab{grid-column:1/-1; min-height:auto; text-align:center; background:#f8fbff}
+.tab-btn .es{font-size:.76rem}
+.tab-btn.active{
+  background:var(--green);
+  border-color:var(--green-dark);
+  color:#16310a;
+}
+.tab-btn.active .tab-index{background:var(--blue-dark)}
+.status-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-top:10px;
+}
+.progress{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex:1;
+  min-width:0;
+}
+.progress small{white-space:nowrap; color:var(--muted)}
+.progress-bar{
+  flex:1;
+  height:8px;
+  border-radius:999px;
+  background:#e8eef4;
+  overflow:hidden;
+}
+.progress-bar > span{
+  display:block;
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,var(--green),#78ba2d);
+}
+.content-area{
+  display:grid;
+  gap:12px;
+}
+.panel{
+  display:none;
+  overflow:hidden;
+}
+.panel.active{display:block}
+.panel-head{
+  background:linear-gradient(180deg,#fbfdff,#f2f7fb);
+  border-bottom:1px solid var(--line);
+  padding:12px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.panel-head h2{
+  margin:0;
+  font-size:1.05rem;
+}
+.panel-head small{color:var(--muted)}
+.section{
+  padding:10px 12px 2px;
+}
+.section + .section{
+  border-top:1px solid #eef3f7;
+}
+.section-title{
+  margin:0 0 10px;
+  font-size:.96rem;
+  color:#233f56;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.section-title::before{
+  content:"";
+  width:8px;
+  height:8px;
+  border-radius:999px;
+  background:var(--green);
+  display:inline-block;
+}
+.group-card,.question-card,.block-card{
+  background:#fbfdff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:8px 10px;
+  margin-bottom:8px;
+}
+.group-card h4,.block-card h4,.question-card h4{
+  margin:0 0 8px;
+  font-size:.9rem;
+}
+.matrix-table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  table-layout:fixed;
+}
+.matrix-table th,
+.matrix-table td{
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  vertical-align:top;
+  padding:8px;
+}
+.matrix-table th:first-child,
+.matrix-table td:first-child{border-left:1px solid var(--line)}
+.matrix-table thead th{
+  background:var(--soft-green);
+  font-size:.82rem;
+  text-align:left;
+}
+.matrix-table thead tr:first-child th:first-child{border-top-left-radius:12px}
+.matrix-table thead tr:first-child th:last-child{border-top-right-radius:12px}
+.matrix-table tbody tr:last-child td:first-child{border-bottom-left-radius:12px}
+.matrix-table tbody tr:last-child td:last-child{border-bottom-right-radius:12px}
+.matrix-item{font-size:.88rem}
+.opt-row{
+  display:flex;
+  flex-wrap:nowrap;
+  gap:5px;
+  align-items:center;
+  overflow-x:auto;
+  padding-bottom:2px;
+}
+.opt{
+  position:relative;
+  display:inline-block;
+}
+.opt input{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  cursor:pointer;
+}
+.opt label{
+  display:block;
+  border:1px solid #ccd8e3;
+  border-radius:999px;
+  padding:5px 9px;
+  background:#fff;
+  font-size:.77rem;
+  min-width:max-content;
+  text-align:center;
+  line-height:1.15;
+}
+.opt input:checked + label{
+  background:#e7f5d7;
+  border-color:#7fb63d;
+  color:#21440d;
+}
+.notes-box textarea,.textarea-wrap textarea{
+  width:100%;
+  min-height:56px;
+  border:1px solid #ccd8e3;
+  border-radius:10px;
+  padding:7px 9px;
+}
+.question-card{
+  display:grid;
+  grid-template-columns:minmax(260px,.95fr) 2.2fr;
+  gap:8px;
+  align-items:start;
+}
+.question-card.single{
+  grid-template-columns:1fr;
+}
+.prompt{
+  min-width:0;
+}
+.prompt .eu{font-size:.88rem}
+.prompt .es{font-size:.78rem}
+.checkbox-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+  gap:6px;
+}
+.check-item{
+  display:flex;
+  gap:8px;
+  align-items:flex-start;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:6px 8px;
+  font-size:.82rem;
+}
+.grid-2{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px;
+}
+.compact-table{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  table-layout:fixed;
+  font-size:.82rem;
+}
+.compact-table th,.compact-table td{
+  border-right:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  padding:7px;
+  vertical-align:top;
+}
+.compact-table th:first-child,.compact-table td:first-child{border-left:1px solid var(--line)}
+.compact-table thead th{background:var(--soft-green); text-align:left}
+.compact-table tbody tr:first-child td{border-top:0}
+.compact-table .opt label{min-width:58px;padding:4px 7px}
+.block-card .question-card{grid-template-columns:1fr;}
+.summary-panel{
+  padding:14px;
+}
+.summary-grid{
+  display:grid;
+  grid-template-columns:1.1fr .9fr;
+  gap:12px;
+}
+.summary-box{
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:12px;
+  background:#fbfdff;
+}
+.summary-box h3{
+  margin:0 0 10px;
+  font-size:.95rem;
+}
+.kpis{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:8px;
+}
+.kpi{
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px;
+  background:#fff;
+}
+.kpi strong{
+  display:block;
+  font-size:1.15rem;
+}
+.dim-summary{
+  display:grid;
+  gap:8px;
+}
+.dim-row{
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fff;
+  padding:9px 10px;
+}
+.dim-row-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:6px;
+}
+.dim-row .mini-bar{
+  width:100%;
+  height:7px;
+  background:#e9eef4;
+  border-radius:999px;
+  overflow:hidden;
+}
+.dim-row .mini-bar span{
+  display:block;
+  height:100%;
+  width:0;
+  background:linear-gradient(90deg,var(--blue),#7bbf2b);
+}
+.auto-summary{
+  margin:0;
+  padding-left:18px;
+}
+.hidden-export{
+  display:none;
+}
+@media (max-width:1100px){
+  .meta-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .summary-grid{grid-template-columns:1fr}
+  .grid-2{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .topbar-inner{flex-direction:column; align-items:flex-start}
+  .top-actions{width:100%; justify-content:flex-start}
+  .tabs{grid-template-columns:1fr}
+  .meta-grid{grid-template-columns:1fr 1fr}
+  .field.wide,.field.full{grid-column:auto}
+  .question-card{grid-template-columns:1fr}
+  .matrix-table,.matrix-table thead,.matrix-table tbody,.matrix-table tr,.matrix-table th,.matrix-table td{display:block; width:100%}
+  .matrix-table thead{display:none}
+  .matrix-table td{border-left:1px solid var(--line); border-right:1px solid var(--line)}
+  .matrix-table tbody tr{margin-bottom:10px; border-top:1px solid var(--line)}
+  .matrix-table tbody tr:last-child td:last-child{border-bottom-right-radius:0}
+  .matrix-table tbody tr:last-child td:first-child{border-bottom-left-radius:0}
+}
+@media print{
+  .topbar,.tabs-card,.panel-nav{display:none !important}
+  body{background:#fff;font-family:Calibri,Arial,sans-serif;font-size:12pt}
+  .layout{max-width:none; padding:0}
+  .logo-print{display:block;height:62px;margin:0 0 10px}
+  .panel,.summary-panel{display:block !important; break-inside:avoid; box-shadow:none; border-color:#cfdbe5}
+  h1,h2,h3{font-family:'Century Gothic',Calibri,Arial,sans-serif}
+  .source-card{break-inside:avoid}
+}
+
+/* v6: hierarkia bisuala eta azalpen-modala */
+.brand-wrap{display:flex;align-items:center;gap:14px;min-width:340px}
+.logo-main{height:42px !important;width:auto !important;object-fit:contain;flex:0 0 auto}
+.brand h1{font-family:"Century Gothic",Calibri,Arial,sans-serif;font-size:1.38rem !important;line-height:1.08;color:var(--blue-dark);letter-spacing:-.02em}
+.brand p{font-size:.82rem;color:var(--muted)}
+.source-card{position:relative;padding:12px 14px 12px 54px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,#fff,#f7fbfd);margin-bottom:12px;font-size:.92rem;line-height:1.35}
+.cc-mark{position:absolute;left:14px;top:13px;width:28px;height:28px;border:1.8px solid var(--blue);border-radius:999px;color:var(--blue);font-weight:800;display:flex;align-items:center;justify-content:center;font-size:.75rem;letter-spacing:-.04em;background:#fff}
+.btn-info{background:var(--blue);color:#fff;font-weight:800;border-color:var(--blue)}
+.btn-info:hover{background:var(--blue-dark)}
+.info-modal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(10,28,42,.42);backdrop-filter:blur(4px)}
+.info-modal.open{display:flex}
+.info-dialog{width:min(820px,96vw);max-height:88vh;overflow:auto;background:#fff;border-radius:22px;border:1px solid var(--line);box-shadow:0 24px 70px rgba(0,34,58,.25)}
+.info-header{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding:22px 24px 14px;border-bottom:1px solid var(--line);background:linear-gradient(135deg,#f8fbfd,#eef6fb)}
+.info-header h2{margin:0;font-family:"Century Gothic",Calibri,Arial,sans-serif;color:var(--blue-dark);font-size:1.35rem}
+.info-close{border:1px solid var(--line);background:#fff;color:var(--blue-dark);padding:7px 12px;border-radius:999px;font-weight:800}
+.info-body{padding:20px 24px 24px;line-height:1.5;color:#25313a}
+.info-body p{margin:.35rem 0 .85rem}.info-body ul{margin:.3rem 0 1rem;padding-left:1.15rem}.info-body li{margin:.22rem 0}.info-note{background:var(--soft);border-left:4px solid var(--blue);padding:11px 13px;border-radius:12px;margin-top:12px}.info-source{font-size:.9rem;color:var(--muted);margin-top:14px}
+.hero-title-card{display:none}
+@media (max-width:860px){.brand-wrap{min-width:0}.topbar-inner{align-items:flex-start}.logo-main{height:34px!important}.brand h1{font-size:1.08rem!important}.top-actions{justify-content:flex-start}.info-dialog{max-height:92vh}}
+@media print{.info-modal,.btn-info{display:none!important}.logo-main{height:34px!important}.source-card{padding-left:48px}.cc-mark{width:24px;height:24px}}
+
+/* v7: goiburua argitu, azalpen-botoia konpondu eta izenburua lerro bakarrean */
+.logo-print{display:none!important}
+.brand-wrap{flex:1 1 auto;min-width:440px!important}
+.brand{min-width:0}
+.brand h1{white-space:nowrap;font-size:clamp(1.08rem,1.55vw,1.62rem)!important;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.top-actions button{padding:8px 12px}
+@media (max-width:980px){.brand h1{white-space:normal}.brand-wrap{min-width:0!important}}
+@media print{.logo-print{display:none!important}.brand h1{white-space:normal}}
+
+
+
+/* v8: hierarkia bisuala, modal funtzionala eta kreditu-logoak */
+.topbar-inner{flex-wrap:wrap;align-items:center;gap:10px 18px}
+.brand-wrap{flex:1 1 560px!important;min-width:0!important;max-width:none}
+.logo-main{height:36px!important}
+.brand h1{white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;font-size:clamp(1.05rem,1.35vw,1.42rem)!important;line-height:1.08!important}
+.top-actions{flex:0 1 auto;display:flex;align-items:center;gap:7px;justify-content:flex-end}
+.top-actions button{padding:7px 10px;font-size:.88rem}
+.source-card{padding:12px 14px!important;display:flex;align-items:center;gap:14px}
+.credit-logos{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.bn-logo{height:42px;width:auto;object-fit:contain}
+.cc-logo{height:28px;width:auto;object-fit:contain}
+.credit-text{min-width:0;line-height:1.35}
+.cc-mark{display:none!important}
+.info-modal.open{display:flex!important}
+.info-dialog{animation:modalIn .16s ease-out}
+@keyframes modalIn{from{transform:translateY(8px);opacity:.65}to{transform:translateY(0);opacity:1}}
+@media (max-width:1180px){.top-actions{width:100%;justify-content:flex-start}.brand h1{font-size:clamp(1rem,3.1vw,1.28rem)!important}}
+@media (max-width:680px){.brand h1{white-space:normal!important}.source-card{align-items:flex-start;flex-direction:column}.bn-logo{height:36px}.cc-logo{height:24px}}
+@media print{.topbar{display:block!important;position:static;border-bottom:1px solid #cfdbe5}.top-actions,.lang-switch,.btn-info{display:none!important}.logo-main{height:28px!important}.brand h1{white-space:nowrap!important;overflow:visible!important;text-overflow:clip!important;font-size:13pt!important}.source-card{display:flex!important;break-inside:avoid}.bn-logo{height:34px}.cc-logo{height:22px}}
+
+
+/* v9: logotipo osagarriak kendu eta oreka bisuala findu */
+.topbar{box-shadow:0 1px 10px rgba(0,44,72,.05)}
+.topbar-inner{
+  display:grid!important;
+  grid-template-columns:auto minmax(360px,1fr) auto;
+  align-items:center;
+  gap:12px 18px;
+  padding:10px 18px!important;
+}
+.brand-wrap{
+  grid-column:1 / 3;
+  display:flex!important;
+  align-items:center;
+  gap:13px;
+  min-width:0!important;
+  flex:initial!important;
+}
+.logo-main{height:32px!important;max-width:130px;object-fit:contain}
+.brand{min-width:0;max-width:100%}
+.brand h1{
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  font-size:clamp(1.18rem,1.55vw,1.58rem)!important;
+  line-height:1.12!important;
+  letter-spacing:-.015em;
+}
+.brand p{margin-top:3px!important;font-size:.82rem!important}
+.top-actions{
+  grid-column:3;
+  justify-self:end;
+  width:auto!important;
+  display:flex!important;
+  align-items:center;
+  justify-content:flex-end!important;
+  gap:7px!important;
+  flex-wrap:wrap;
+  max-width:560px;
+}
+.top-actions button{padding:7px 11px!important;font-size:.86rem!important}
+.lang-switch{padding:3px!important}
+.lang-switch button{padding:6px 10px!important}
+.source-card{
+  padding:11px 14px!important;
+  display:block!important;
+  border-left:5px solid var(--blue);
+  background:linear-gradient(180deg,#ffffff,#f8fbfd)!important;
+}
+.credit-logos,.bn-logo,.cc-logo{display:none!important}
+.credit-text{width:100%;font-size:.9rem;color:#344454}
+.meta-card,.tabs-card,.panel,.summary-panel{box-shadow:0 2px 12px rgba(0,44,72,.045)}
+.tabs{gap:9px!important}
+.tab-btn{min-height:58px!important;border-radius:12px!important}
+.panel-head{padding:11px 16px!important}
+.section{padding:10px 12px 4px!important}
+.group-card,.question-card,.block-card{border-radius:12px!important}
+@media (max-width:1180px){
+  .topbar-inner{grid-template-columns:auto 1fr!important}
+  .brand-wrap{grid-column:1 / -1!important}
+  .top-actions{grid-column:1 / -1!important;justify-self:start!important;justify-content:flex-start!important;max-width:none!important}
+}
+@media (max-width:680px){
+  .topbar-inner{padding:10px 14px!important}
+  .brand-wrap{align-items:flex-start!important;gap:10px!important}
+  .logo-main{height:28px!important;max-width:105px}
+  .brand h1{font-size:1.08rem!important}
+  .top-actions button{font-size:.82rem!important;padding:6px 9px!important}
+}
+@media print{
+  .credit-logos,.bn-logo,.cc-logo{display:none!important}
+  .source-card{display:block!important;border-left:4px solid #00558C!important;padding:8px 10px!important}
+  .brand h1{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;font-size:14pt!important}
+}
+</style>
+</head>
+<body class="lang-eu">
+<header class="topbar">
+<div class="topbar-inner">
+<div class="brand-wrap">
+<img alt="Eusko Jaurlaritza - Gobierno Vasco" class="logo-main" src="data:image/png;base64,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"/>
+<div class="brand">
+<h1><span class="eu">Irakasle jarduna berrikusteko tresna</span><span class="es">Herramienta para revisar la práctica docente</span></h1>
+<p><span class="eu">Behaketa-tresna egokitua</span><span class="es">Herramienta de observación adaptada</span></p>
+</div>
+</div>
+<div class="top-actions">
+<div aria-label="Hizkuntza / Idioma" class="lang-switch">
+<button class="active" id="btn-lang-eu" onclick="setLanguage('eu')" type="button">EU</button>
+<button id="btn-lang-es" onclick="setLanguage('es')" type="button">ES</button>
+</div>
+<button class="btn-info" onclick="openInfo()" type="button"><span class="eu">Tresnaren azalpena</span><span class="es">Explicación</span></button>
+<button class="btn-primary" onclick="printAsPdf()" type="button"><span class="eu">PDF gisa gorde</span><span class="es">Guardar PDF</span></button>
+<button class="btn-secondary" onclick="exportDocx()" type="button"><span class="eu">DOCX deskargatu</span><span class="es">Descargar DOCX</span></button>
+
+
+<button class="btn-secondary" onclick="resetForm()" type="button"><span class="eu">Garbitu</span><span class="es">Limpiar</span></button>
+</div>
+</div>
+</header>
+<div aria-labelledby="info-title" aria-modal="true" class="info-modal" id="info-modal" onclick="if(event.target===this) closeInfo()" role="dialog">
+<div class="info-dialog">
+<div class="info-header">
+<h2 id="info-title"><span class="eu">Tresnaren azalpena</span><span class="es">Explicación de la herramienta</span></h2>
+<button class="info-close" onclick="closeInfo()" type="button"><span class="eu">Itxi</span><span class="es">Cerrar</span></button>
+</div>
+<div class="info-body">
+<div class="eu">
+<p><strong>Irakasle jarduna berrikusteko tresna</strong> ikasgelako jarduna behatzeko, deskribatzeko eta hausnarketa profesionala sustatzeko baliabide bat da. OECDren <em>Global Teaching Insights</em> proiektuko behaketa-tresnetan oinarrituta dago, eta tresna horien helburua da nazioarteko ikerketan adostutako irakaskuntza-praktika garrantzitsuak irakasleen eskura jartzea.</p>
+<p>Tresnak ez du irakaslearen lana epaitzeko edo sailkatzeko asmorik. Aitzitik, ikasgelan gertatzen dena modu partekatuan aztertzeko marko bat eskaintzen du: zer egiten den ikusgai bihurtu, praktika zehatzak izendatu eta hobekuntzarako elkarrizketa pedagogikoa erraztu.</p>
+<ul>
+<li>Ikasgela-kudeaketa, laguntza sozioemozionala eta irakaskuntza-praktikak modu egituratuan behatzeko.</li>
+<li>Irakasleen arteko elkarrizketa profesionala eta autohausnarketa bultzatzeko.</li>
+<li>Matematikako saioetan ikasleen parte-hartzea, ulermena, arrazoibidea eta feedbacka aztertzeko.</li>
+<li>Behaketa ondoren hobekuntza-erabaki zehatzak hartzeko oinarri partekatua izateko.</li>
+</ul>
+<div class="info-note">Erabilera gomendatua: behaketa amaitu ondoren, datuak ez dira soilik puntuazio gisa interpretatu behar; komeni da ebidentzia zehatzekin, adibideekin eta irakaslearen hausnarketarekin batera lantzea.</div>
+<p class="info-source">Oinarria: OECD, <em>Global Teaching Insights — Observation Tools</em>.</p>
+</div>
+<div class="es">
+<p><strong>La herramienta para revisar la práctica docente</strong> es un recurso para observar, describir y promover la reflexión profesional sobre lo que ocurre en el aula. Está basada en las herramientas de observación del proyecto <em>Global Teaching Insights</em> de la OECD, cuyo propósito es acercar al profesorado prácticas de enseñanza relevantes respaldadas por la investigación internacional.</p>
+<p>La herramienta no pretende juzgar ni clasificar el trabajo docente. Ofrece un marco compartido para analizar la práctica: hacer visible lo que sucede en el aula, nombrar prácticas concretas y facilitar una conversación pedagógica orientada a la mejora.</p>
+<ul>
+<li>Observar de forma estructurada la gestión del aula, el apoyo socioemocional y las prácticas de enseñanza.</li>
+<li>Impulsar la conversación profesional y la autorreflexión docente.</li>
+<li>Analizar en sesiones de matemáticas la participación, la comprensión, el razonamiento y el feedback.</li>
+<li>Construir una base común para tomar decisiones concretas de mejora tras la observación.</li>
+</ul>
+<div class="info-note">Uso recomendado: tras la observación, los datos no deberían interpretarse solo como puntuaciones; conviene analizarlos junto con evidencias concretas, ejemplos y la reflexión de la persona docente.</div>
+<p class="info-source">Base: OECD, <em>Global Teaching Insights — Observation Tools</em>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="layout">
+<section class="meta-card">
+<div class="source-card">
+<div class="credit-text">
+<strong><span class="eu">Oinarria eta egokitzapena</span><span class="es">Base y adaptación</span></strong><br/>
+<span class="eu">Tresna hau OECDren <em>Global Teaching Insights</em> proiektuko behaketa-tresnetan oinarritutako itzulpen eta egokitzapena da.</span>
+<span class="es">Esta herramienta es una traducción y adaptación basada en las herramientas de observación del proyecto <em>Global Teaching Insights</em> de la OECD.</span>
+<br/><a href="https://www.oecd.org/en/about/projects/global-teaching-insights.html" rel="noopener" target="_blank">OECD: Global Teaching Insights</a>
+<br/><span class="eu">Creative Commons: Berritzegune Nagusia 2026. Matematika Ubidea DBH. CC BY-SA.</span>
+<span class="es">Creative Commons: Berritzegune Nagusia 2026. Matematika Ubidea DBH. CC BY-SA.</span>
+</div>
+</div>
+<div class="meta-grid">
+<div class="field">
+<label class="bilingual"><span class="eu">Irakaslea / Behatua</span><span class="es">Docente / Persona observada</span></label>
+<input data-autosave="meta_teacher" type="text"/>
+</div>
+<div class="field">
+<label class="bilingual"><span class="eu">Behatzailea</span><span class="es">Persona observadora</span></label>
+<input data-autosave="meta_observer" type="text"/>
+</div>
+<div class="field">
+<label class="bilingual"><span class="eu">Data</span><span class="es">Fecha</span></label>
+<input data-autosave="meta_date" type="date"/>
+</div>
+<div class="field">
+<label class="bilingual"><span class="eu">Arloa / Ikasgaia</span><span class="es">Área / Materia</span></label>
+<input data-autosave="meta_subject" type="text"/>
+</div>
+<div class="field">
+<label class="bilingual"><span class="eu">Maila / Taldea</span><span class="es">Nivel / Grupo</span></label>
+<input data-autosave="meta_group" type="text"/>
+</div>
+<div class="field">
+<label class="bilingual"><span class="eu">Saioaren testuingurua</span><span class="es">Contexto de la sesión</span></label>
+<input data-autosave="meta_context" type="text"/>
+</div>
+<div class="field full">
+<label class="bilingual"><span class="eu">Hasierako oharrak</span><span class="es">Observaciones iniciales</span></label>
+<textarea data-autosave="meta_notes"></textarea>
+</div>
+</div>
+</section>
+<section class="tabs-card">
+<div class="tabs" id="tabs"></div>
+<div class="status-row">
+<div class="progress">
+<small><span class="eu">Osatutakoa</span><span class="es">Progreso</span></small>
+<div class="progress-bar"><span id="progress-fill"></span></div>
+<strong id="progress-text">0%</strong>
+</div>
+<small id="completion-caption">0 / 0</small>
+</div>
+</section>
+<div class="content-area" id="panels"></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/xlsx-js-style@1.2.0/dist/xlsx.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.js"></script>
+<script>
+
+function openInfo(){
+  const modal = document.getElementById('info-modal');
+  if(modal){
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    const closeBtn = modal.querySelector('.info-close');
+    if(closeBtn) closeBtn.focus({preventScroll:true});
+  }
+}
+function closeInfo(){
+  const modal = document.getElementById('info-modal');
+  if(modal){
+    modal.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+document.addEventListener('keydown', function(event){
+  if(event.key === 'Escape') closeInfo();
+});
+
+const DATA = {"meta":{"title_eu":"Irakasle jarduna berrikusteko tresna","title_es":"Herramienta para revisar la práctica docente","subtitle_eu":"Excel jatorrizko tresnaren HTML bertsio elebiduna, partekatzeko erosoagoa.","subtitle_es":"Versión HTML bilingüe de la herramienta original en Excel, más cómoda para compartir."},"dimensions":[{"id":"kudeaketa","title_eu":"Ikasgelaren kudeaketa","title_es":"Gestión del aula","sections":[{"type":"matrix_two_scales","title_eu":"I. Behaketa-taula","title_es":"I. Tabla de observación","groups":[{"group_eu":"Administrazio lanak","group_es":"Tareas administrativas","question1_eu":"…denboran antolatuak eta eraginkorrak?","question1_es":"¿…estuvieron organizadas en el tiempo y fueron eficaces?","options1":[{"eu":"Asko","es":"Mucho"},{"eu":"Zerbait","es":"Algo"},{"eu":"Ez, inondik inora","es":"No, en absoluto"}],"question2_eu":"Errutina bat inplikatzen du?","question2_es":"¿Implica una rutina?","options2":[{"eu":"Bai","es":"Sí"},{"eu":"Ez","es":"No"},{"eu":"Agian","es":"Quizá"}],"items":[{"eu":"Deitu laguntzera","es":"Llamar para pedir ayuda"},{"eu":"Agurtu","es":"Saludar"},{"eu":"Jarraibideak eman","es":"Dar instrucciones"},{"eu":"Materialak pasatu/lortu","es":"Repartir/conseguir materiales"},{"eu":"Konfigurazio fisikoa","es":"Configuración física del aula"},{"eu":"Zeregina esleitu","es":"Asignar la tarea"},{"eu":"Beste bat","es":"Otro"}]},{"group_eu":"Etenak","group_es":"Interrupciones","question1_eu":"…azkar eta modu eraginkorrean konpondu dira?","question1_es":"¿…se resolvieron con rapidez y eficacia?","options1":[{"eu":"Bai","es":"Sí"},{"eu":"Zerbait","es":"Algo"},{"eu":"Ez","es":"No"}],"question2_eu":"Errutina bat inplikatzen du?","question2_es":"¿Implica una rutina?","options2":[{"eu":"Bai","es":"Sí"},{"eu":"Ez","es":"No"},{"eu":"Agian","es":"Quizá"}],"items":[{"eu":"Ekipoaren/materialaren arazoa","es":"Problema de equipo/material"},{"eu":"Kanpoko intrusioa","es":"Intrusión externa"},{"eu":"Portaera txarra","es":"Mal comportamiento"},{"eu":"Beste bat","es":"Otro"}]},{"group_eu":"Irakaskuntza eta ikaskuntza","group_es":"Enseñanza y aprendizaje","question1_eu":"Jarduera egitura desberdinen arteko trantsizioa azkarra eta eraginkorra izan zen?","question1_es":"¿La transición entre distintas estructuras de actividad fue rápida y eficaz?","options1":[{"eu":"Bai","es":"Sí"},{"eu":"Zerbait","es":"Algo"},{"eu":"Ez","es":"No"}],"question2_eu":"Irakaslearen jarraipena","question2_es":"Seguimiento del profesorado","options2":[{"eu":"Sarritan","es":"Frecuentemente"},{"eu":"Batzuetan","es":"A veces"},{"eu":"Gutxitan","es":"Rara vez"}],"items":[{"eu":"Ikastalde osoa","es":"Grupo completo"},{"eu":"Talde txikiak","es":"Pequeños grupos"},{"eu":"Bikoteak","es":"Parejas"},{"eu":"Banakakoa","es":"Individual"}]}],"notes_eu":"Oharrak edo iruzkinak","notes_es":"Observaciones o comentarios"},{"type":"likert_block","title_eu":"II. Laburpen orokorrak","title_es":"II. Resúmenes generales","items":[{"label_eu":"Irakaskuntza-denbora maximizatu egin zen","label_es":"Se maximizó el tiempo de enseñanza","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Erabilitako errutinak eraginkorrak izan ziren","label_es":"Las rutinas utilizadas fueron eficaces","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"},{"eu":"Ez dago epaitzeko errutina nahikorik","es":"No hay suficientes rutinas para valorarlo"}]},{"label_eu":"Irakasleak ziurtatu zuen ikasleak kontzentratuta zeudela eta lanean jarraitzen zutela.","label_es":"El profesorado se aseguró de que el alumnado estuviera concentrado y siguiera trabajando.","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Irakaslea erregulartasunez mugitzen zen ikasgelatik ikasleen lana monitorizatzeko","label_es":"El profesorado se movía regularmente por el aula para supervisar el trabajo del alumnado","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Jardueren egiturak eta esleitutako lanak ondo konbinatu ziren","label_es":"Las estructuras de actividad y las tareas asignadas estuvieron bien combinadas","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Oro har, ikasgela ondo gobernatuta egon zen","label_es":"En conjunto, el aula estuvo bien gestionada","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"type":"textarea","label_eu":"Zerbait desberdin egingo ote zuen ikasgelaren maneiuari dagokionez?","label_es":"¿Harías algo diferente en relación con la gestión del aula?"}]}]},{"id":"sozio","title_eu":"Laguntza sozioemozionala","title_es":"Apoyo socioemocional","sections":[{"type":"grouped_questions","title_eu":"I. Behaketaren grafikoa","title_es":"I. Gráfico de observación","groups":[{"group_eu":"Errespetua","group_es":"Respeto","items":[{"label_eu":"Irakasleak errespetuz tratatzen ditu ikasle guztiak","label_es":"El profesorado trata con respeto a todo el alumnado","options":[{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Ezin da epaitu","es":"No se puede valorar"}]},{"label_eu":"Ikasleek elkarrenganako errespetua erakusten dute","label_es":"El alumnado muestra respeto entre sí","options":[{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Ezin da epaitu","es":"No se puede valorar"}]}]},{"group_eu":"Estimolua eta goxotasuna","group_es":"Estímulo y calidez","items":[{"label_eu":"Giroa da...","label_es":"El clima es...","options":[{"eu":"Oso beroa eta lagunkoia","es":"Muy cálido y cercano"},{"eu":"Goxoa eta pixka bat lagunkoia","es":"Agradable y algo cercano"},{"eu":"Inola ere ez epel eta lagunkoi","es":"Nada cálido ni cercano"},{"eu":"Ezin da epaitu","es":"No se puede valorar"}]},{"label_eu":"Irakaslea adoretsua eta irekia da","label_es":"El profesorado es alentador y abierto","options":[{"eu":"Asko","es":"Mucho"},{"eu":"Pixka bat","es":"Un poco"},{"eu":"Ez, inola ere ez","es":"No, en absoluto"},{"eu":"Ezin da epaitu","es":"No se puede valorar"}]}]},{"group_eu":"Arriskuak hartzea","group_es":"Asunción de riesgos","items":[{"label_eu":"Ikasleek beren borondatez partekatzen dituzte haien lan eta ideiak","label_es":"El alumnado comparte voluntariamente su trabajo y sus ideas","options":[{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Ezin da epaitu","es":"No se puede valorar"}]},{"label_eu":"Badirudi ikasleak laguntza eskatzeko edo galderak egiteko prest daudela","label_es":"Parece que el alumnado está dispuesto a pedir ayuda o hacer preguntas","options":[{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"}]}]},{"group_eu":"Iraunkortasuna","group_es":"Persistencia","items":[{"label_eu":"Irakasleak ikasleak animatzen ditu zailtasunak dituztenean amore ez ematera","label_es":"El profesorado anima al alumnado a no rendirse cuando encuentra dificultades","options":[{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"}]}]},{"group_eu":"Jendaurrean partekatzea","group_es":"Compartir en público","items":[{"label_eu":"Irakasleak bide ematen die ikasleei haien jarduna ikaskideen aurrean partekatzera","label_es":"El profesorado ofrece oportunidades para que el alumnado comparta su trabajo ante sus compañeros y compañeras","options":[{"eu":"Gutxitan","es":"Rara vez"},{"eu":"Batzuetan","es":"A veces"},{"eu":"Sarritan","es":"Frecuentemente"}]}]},{"type":"textarea","label_eu":"Laguntza sozio-emozionalari buruzko arreta piztu zizuten gauzak:","label_es":"Aspectos que te llamaron la atención sobre el apoyo socioemocional:"}]},{"type":"likert_block","title_eu":"II. Laburpen orokorrak","title_es":"II. Resúmenes generales","items":[{"label_eu":"Ikasle gehienek eroso ziruditen klasean parte hartuz","label_es":"La mayoría del alumnado parecía sentirse cómoda participando en clase","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Irakasleak adi-adi eta interesez entzun zituen ikasleak","label_es":"El profesorado escuchó al alumnado con atención e interés","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Ikasleak gaiztoak edo begirunerik gabekoak ziren haien ikaskideekin","label_es":"El alumnado fue desagradable o irrespetuoso con sus compañeros y compañeras","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Gelan giro alaia zegoen","label_es":"En el aula había un ambiente agradable","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Irakasleak ikasleak motibatzen zituen, eta pazientzia zuen zailtasunak zituzten ikasleekin","label_es":"El profesorado motivaba al alumnado y mostraba paciencia con quienes tenían dificultades","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"},{"eu":"Ezin da epaitu","es":"No se puede valorar"}]},{"label_eu":"Ikasleek ez ziruditen akatsak egiteko kezkaturik edo beldurrez","label_es":"El alumnado no parecía preocupado o temeroso por cometer errores","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"type":"textarea","label_eu":"Laguntza sozioemozionalari dagokionez, zerbait desberdina egingo zenuen gela honetan?","label_es":"En relación con el apoyo socioemocional, ¿harías algo diferente en esta aula?"}]}]},{"id":"ahozko","title_eu":"Ahozko jardunaren kalitatea","title_es":"Calidad de la interacción oral","sections":[{"type":"grouped_questions","title_eu":"I. Behaketaren grafikoa","title_es":"I. Gráfico de observación","groups":[{"group_eu":"Ikasleen zeregina","group_es":"Papel del alumnado","items":[{"label_eu":"Ikasleek gelako elkarrizketa zuzentzen eta taxutzen laguntzen dute","label_es":"El alumnado ayuda a dirigir y dar forma a la conversación del aula","options":[{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"}]},{"label_eu":"Irakasleak hitz egiten du gehienetan","label_es":"El profesorado habla la mayor parte del tiempo","options":[{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"}]},{"label_eu":"Irakasleak ikasle berberei deitu ohi die","label_es":"El profesorado suele dirigirse siempre al mismo alumnado","options":[{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"}]}]},{"group_eu":"Auzitan jartzea","group_es":"Desafío intelectual","items":[{"label_eu":"Irakasleak galderak egiten ditu: nola, zergatik...","label_es":"El profesorado formula preguntas del tipo: cómo, por qué...","options":[{"eu":"Gutxitan","es":"Rara vez"},{"eu":"Batzuetan","es":"A veces"},{"eu":"Sarritan","es":"Frecuentemente"}]},{"label_eu":"Irakasleak nahikoa denbora ematen du galderak egin ondoren","label_es":"El profesorado deja tiempo suficiente tras plantear las preguntas","options":[{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"}]},{"label_eu":"Irakasleak segimendu-galderak egiten ditu, ikasleek sakonago pentsa dezaten","label_es":"El profesorado formula preguntas de seguimiento para que el alumnado piense con mayor profundidad","options":[{"eu":"Sarritan","es":"Frecuentemente"},{"eu":"Batzuetan","es":"A veces"},{"eu":"Gutxitan","es":"Rara vez"}]},{"label_eu":"Ikasleen erantzunek luzatzeko joera dute","label_es":"Las respuestas del alumnado tienden a desarrollarse y ampliarse","options":[{"eu":"Sarritan","es":"Frecuentemente"},{"eu":"Batzuetan","es":"A veces"},{"eu":"Gutxitan","es":"Rara vez"}]}]},{"group_eu":"Azalpenak","group_es":"Explicaciones","items":[{"label_eu":"Azalpenak zehatzak eta sakonak dira","label_es":"Las explicaciones son precisas y profundas","options":[{"eu":"Gutxitan","es":"Rara vez"},{"eu":"Batzuetan","es":"A veces"},{"eu":"Sarritan","es":"Frecuentemente"}]},{"label_eu":"Irakasleak ematen ditu azalpen gehienak","label_es":"El profesorado proporciona la mayoría de las explicaciones","options":[{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"}]}]},{"group_eu":"Eztabaida","group_es":"Discusión","items":[{"label_eu":"Ikasgelako elkarrizketan eztabaida iraunkorrak egoten dira","label_es":"En la conversación del aula se mantienen discusiones sostenidas","options":[{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"}]},{"label_eu":"Ikasle gutxi batzuk dira eztabaidetan nagusi","label_es":"Solo unos pocos estudiantes dominan los debates","options":[{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"}]},{"label_eu":"Ikasleen arteko eztabaidak sortzen dira","label_es":"Se generan discusiones entre estudiantes","options":[{"eu":"Gutxitan","es":"Rara vez"},{"eu":"Batzuetan","es":"A veces"},{"eu":"Sarritan","es":"Frecuentemente"}]}]},{"type":"textarea","label_eu":"Gelako elkarrizketei buruz atentzioa eman zizuten gauzak:","label_es":"Aspectos que te llamaron la atención sobre las conversaciones del aula:"}]},{"type":"likert_block","title_eu":"II. Laburpen orokorrak","title_es":"II. Resúmenes generales","items":[{"label_eu":"Irakasleak hitz egiteko eskatu zien ikasleei","label_es":"El profesorado pidió al alumnado que hablara","options":[{"eu":"Inoiz ez","es":"Nunca"},{"eu":"Gutxitan","es":"Rara vez"},{"eu":"Batzuetan","es":"A veces"},{"eu":"Sarritan","es":"Frecuentemente"},{"eu":"Askotan","es":"Muchas veces"}]},{"label_eu":"Irakasleak galdera desafiatzaileak egin zituen","label_es":"El profesorado formuló preguntas desafiantes","options":[{"eu":"Inoiz ez","es":"Nunca"},{"eu":"Gutxitan","es":"Rara vez"},{"eu":"Batzuetan","es":"A veces"},{"eu":"Sarritan","es":"Frecuentemente"},{"eu":"Beti","es":"Siempre"}]},{"label_eu":"Irakasleak kontrolatzen zuen elkarrizketaren norabidea","label_es":"El profesorado controlaba la dirección de la conversación","options":[{"eu":"Inoiz ez","es":"Nunca"},{"eu":"Gutxitan","es":"Rara vez"},{"eu":"Batzuetan","es":"A veces"},{"eu":"Sarritan","es":"Frecuentemente"},{"eu":"Beti","es":"Siempre"}]},{"label_eu":"Ikasleek informazio zehatza eta ideiak eman zituzten","label_es":"El alumnado aportó información precisa e ideas","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Irakasleak eman zituen azalpen gehienak","label_es":"El profesorado proporcionó la mayor parte de las explicaciones","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Ikasgelan sortzen diren ideien jatorria...","label_es":"El origen de las ideas que surgen en el aula...","options":[{"eu":"Batez ere irakaslearena da","es":"Es principalmente del profesorado"},{"eu":"Irakaslearena eta ikasleena da, antzeko proportzioan","es":"Es del profesorado y del alumnado en proporciones similares"},{"eu":"Batez ere ikasleena da","es":"Es principalmente del alumnado"}]},{"type":"textarea","label_eu":"Ahozko jardunari dagokionez, ikasgela honetan zerbait desberdina egingo zenuen?","label_es":"En relación con la interacción oral, ¿harías algo diferente en esta aula?"}]}]},{"id":"kontzeptuak","title_eu":"Kontzeptuak menderatzea","title_es":"Dominio de conceptos","sections":[{"type":"custom_blocks","title_eu":"I. Behaketaren grafikoa","title_es":"I. Gráfico de observación","blocks":[{"title_eu":"Konexioak","title_es":"Conexiones","items":[{"label_eu":"Irakaskuntza prozesuan konexioak nabarmendu ziren","label_es":"En el proceso de enseñanza se destacaron conexiones entre ideas","options":[{"eu":"Bai","es":"Sí"},{"eu":"Ez","es":"No"},{"eu":"Hein batean","es":"En parte"}]},{"type":"checkboxes","label_eu":"Baiezkoan, zer alderditan egin ziren konexioak? (hautatu nahi beste)","label_es":"En caso afirmativo, ¿en qué aspectos se establecieron conexiones? (marca todas las que procedan)","options":[{"eu":"Ideiak/ikuspegiak","es":"Ideas/enfoques"},{"eu":"Prozedurak/arauak","es":"Procedimientos/reglas"},{"eu":"Irudikapenak","es":"Representaciones"},{"eu":"Erantzunak/emaitzak","es":"Respuestas/resultados"},{"eu":"Beste batzuk:","es":"Otros:"}]},{"label_eu":"Konexioak honelakoak zan ziren:","label_es":"Las conexiones fueron de este tipo:","options":[{"eu":"Inplizituak gehienbat","es":"Mayormente implícitas"},{"eu":"esplizituki aipatuak","es":"Mencionadas explícitamente"},{"eu":"Xehekatuak/landuak","es":"Desarrolladas en profundidad"},{"eu":"Orokorrak/sinpleak","es":"Generales/simples"}]}]},{"title_eu":"Patroiak eta orokortzeak","title_es":"Patrones y generalizaciones","items":[{"label_eu":"Irakaskuntza-prozesuan ereduak nabarmendu ziren hainbat adibidetan","label_es":"En el proceso de enseñanza se destacaron patrones en distintos ejemplos","options":[{"eu":"Bai","es":"Sí"},{"eu":"Ez","es":"No"}]},{"label_eu":"Baiezkoan, irakasleak zehatzetik orokorrera pasatzea lortu zuen?","label_es":"En caso afirmativo, ¿el profesorado logró pasar de lo concreto a lo general?","options":[{"eu":"Bai","es":"Sí"},{"eu":"Ez","es":"No"}]},{"label_eu":"Patroiak eta/edo orokortzeak honelakoak izan ziren:","label_es":"Los patrones y/o generalizaciones fueron de este tipo:","options":[{"eu":"Gehienetan inplizituak","es":"Mayormente implícitos"},{"eu":"Berariaz eztabaidatuak","es":"Tratados explícitamente"},{"eu":"Xehekatuak/landuak","es":"Desarrollados en profundidad"},{"eu":"Orokorrak/sinpleak","es":"Generales/simples"}]}]},{"title_eu":"Prozedurak eta metodoak","title_es":"Procedimientos y métodos","items":[{"label_eu":"Irakas jardunean prozedura edo metodo bat aurkeztu zen","label_es":"En la práctica docente se presentó un procedimiento o método","options":[{"eu":"Bai","es":"Sí"},{"eu":"Ez","es":"No"}]},{"type":"checkboxes","label_eu":"Baiezkoan, zeintzuk? (hautatu nahi beste)","label_es":"En caso afirmativo, ¿cuáles? (marca todas las que procedan)","options":[{"eu":"Urratsen segida logiko bat","es":"Una secuencia lógica de pasos"},{"eu":"Demostrazio bat pausoz pauso","es":"Una demostración paso a paso"},{"eu":"Urrats espezifikoen azalpena","es":"Explicación de pasos específicos"},{"eu":"Urrats batzuk edo guztiak errepikatzea edo praktikatzea","es":"Repetición o práctica de algunos o todos los pasos"},{"eu":"Eusteko estrategiak","es":"Estrategias de apoyo"},{"eu":"Beste batzuk:","es":"Otros:"}]}]},{"title_eu":"Argitasuna eta zehaztasuna","title_es":"Claridad y precisión","items":[{"label_eu":"Irakas jardunean adibide errealak edo adibide zehatzak aurkeztu ziren","label_es":"En la práctica docente se presentaron ejemplos reales o concretos","options":[{"eu":"Bai","es":"Sí"},{"eu":"Ez","es":"No"}]},{"label_eu":"Irakaskuntza-prozesuan aurreko klaseetako edo aurretiko ikaskuntzako ezagutzak aktibatu ziren","label_es":"En el proceso de enseñanza se activaron conocimientos de clases previas o de aprendizajes anteriores","options":[{"eu":"Bai","es":"Sí"},{"eu":"Ez","es":"No"}]},{"label_eu":"Irakatsitakoa argia eta jarraitzeko erraza izan zen","label_es":"Lo enseñado fue claro y fácil de seguir","options":[{"eu":"Bai","es":"Sí"},{"eu":"Ez","es":"No"}]},{"label_eu":"Irakaskuntza-prozesuan nahigabeko edo landu gabeko akatsak egon ziren","label_es":"En el proceso de enseñanza hubo errores involuntarios o no abordados","options":[{"eu":"Bai","es":"Sí"},{"eu":"Ez","es":"No"}]},{"label_eu":"Irakatsitakoa laburtu eta berrikusi egin zen aurrera egin aurretik","label_es":"Lo enseñado se resumió y revisó antes de continuar","options":[{"eu":"Bai","es":"Sí"},{"eu":"Ez","es":"No"}]},{"label_eu":"Ikaskuntza-helburu argiak eta esplizituak partekatu ziren","label_es":"Se compartieron objetivos de aprendizaje claros y explícitos","options":[{"eu":"Bai","es":"Sí"},{"eu":"Ez","es":"No"}]}]},{"type":"textarea","label_eu":"Kontzeptuen kudeaketaren kalitateari dagokonez, honakoak azpimarratuko nituzke:","label_es":"En relación con la calidad de la gestión conceptual, destacaría lo siguiente:"}]},{"type":"likert_block","title_eu":"II. Laburpen orokorrak","title_es":"II. Resúmenes generales","items":[{"label_eu":"Irakaskuntza-prozesuan, ideien arteko konexioak egiteari denbora eskaini zitzaion.","label_es":"En el proceso de enseñanza se dedicó tiempo a establecer conexiones entre ideas.","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Irakaskuntza-prozesuan modu eraginkorrean aurkeztu ziren prozedurak eta metodoak","label_es":"En el proceso de enseñanza se presentaron de forma eficaz procedimientos y métodos","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"},{"eu":"Ez dago epaitzeko prozedura eta metodo nahikorik","es":"No hay suficientes procedimientos y métodos para valorarlo"}]},{"label_eu":"Irakaskuntza-prozesuan ereduak eta orokortzeak eskaini ziren","label_es":"En el proceso de enseñanza se ofrecieron patrones y generalizaciones","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Irakas jardunaren helburu orokorrak argi eta garbi jakinarazi zitzaizkien ikasleei","label_es":"Los objetivos generales de la práctica docente se comunicaron con claridad al alumnado","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Irakatsitakoa zehatza izan zen eta nahi gabeko akatsik gabekoa","label_es":"Lo enseñado fue preciso y estuvo libre de errores no intencionados","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Gelan landutako edukiaren laburpen argia eman zen","label_es":"Se ofreció un resumen claro del contenido trabajado en el aula","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"type":"textarea","label_eu":"Zerbait desberdina egingo zenuen ikasgela horretan, kontzeptuen kudeaketari dagokionez?","label_es":"¿Harías algo diferente en esa aula en relación con la gestión de los conceptos?"}]}]},{"id":"inplikazioa","title_eu":"Ikaslearen inplikazio kognitiboa","title_es":"Implicación cognitiva del alumnado","sections":[{"type":"custom_blocks","title_eu":"I. Behaketaren grafikoa","title_es":"I. Gráfico de observación","blocks":[{"title_eu":"Erronka intelektuala","title_es":"Desafío intelectual","items":[{"label_eu":"Irakasleak erronka kognitibo eta intelektuakak eskaini zizkien ikasleei","label_es":"El profesorado planteó al alumnado retos cognitivos e intelectuales","options":[{"eu":"Bai","es":"Sí"},{"eu":"Ez","es":"No"}]},{"type":"checkboxes","label_eu":"Irakasleak ikasleei eskatu zien... (hautatu nahi beste)","label_es":"El profesorado pidió al alumnado que... (marca todas las que procedan)","options":[{"eu":"Ideien, irtenbideen edo ikuspegien indarrak eta ahuleziak ebaluatzeko","es":"Evaluara fortalezas y debilidades de ideas, soluciones o enfoques"},{"eu":"Ideiak, irtenbideak edo ikuspegiak azaltzeko edo justifikatzeko","es":"Explicara o justificara ideas, soluciones o enfoques"},{"eu":"Ideia, irtenbide edo ikuspegi bat defendatzeko","es":"Defendiera una idea, solución o enfoque"}]},{"label_eu":"Ikasleek beren pentsamendu kritikoa erabiltzeko aukera izan zuten","label_es":"El alumnado tuvo oportunidad de utilizar su pensamiento crítico","options":[{"eu":"Gutxitan","es":"Rara vez"},{"eu":"Batzuetan","es":"A veces"},{"eu":"Sarritan","es":"Frecuentemente"}]}]},{"title_eu":"Metodoak eta prozedurak","title_es":"Métodos y procedimientos","items":[{"label_eu":"Irakaskuntza-prozesuan, ikasleek prozedura edo metodo bat ikas zezaten eskatu zen","label_es":"En el proceso de enseñanza se pidió al alumnado que aprendiera un procedimiento o método","options":[{"eu":"Bai","es":"Sí"},{"eu":"Ez","es":"No"}]},{"type":"checkboxes","label_eu":"Irakasleak ikasleei eskatu zien... (hautatu nahi beste)","label_es":"El profesorado pidió al alumnado que... (marca todas las que procedan)","options":[{"eu":"Haien erantzunak logikan oinarritzea","es":"Basara sus respuestas en la lógica"},{"eu":"Lanean erabili dituzten urratsak adieraztea","es":"Explicara los pasos utilizados en su trabajo"},{"eu":"Prozedura edo metodo baten urrats bakoitzaren justifikazioa berrikustea eta laburtzea","es":"Revisara y resumiera la justificación de cada paso de un procedimiento o método"},{"eu":"Urratsak errepikatu edo azaltzea","es":"Repitiera o explicara los pasos"}]},{"label_eu":"Ikasleek aukera izan zuten ikasten ari ziren metodo edo prozedurak nahita errepikatzeko.","label_es":"El alumnado tuvo oportunidad de repetir de manera intencional los métodos o procedimientos que estaba aprendiendo.","options":[{"eu":"Bai","es":"Sí"},{"eu":"Pixka bat","es":"Un poco"},{"eu":"Ez","es":"No"}]}]},{"title_eu":"Arrazoiketa-ibilbide anitzak","title_es":"Múltiples vías de razonamiento","items":[{"label_eu":"Ikasleek aukera izan zuten arrazoiketara modu desberdinetan heltzeko.","label_es":"El alumnado tuvo la oportunidad de llegar al razonamiento por vías distintas.","options":[{"eu":"Bai","es":"Sí"},{"eu":"Ez","es":"No"}]},{"type":"checkboxes","label_eu":"Irakasleak ikasleei eskatu zien…","label_es":"El profesorado pidió al alumnado que…","options":[{"eu":"Antzekotasunak eta desberdintasunak azaltzeko","es":"Explicara semejanzas y diferencias"},{"eu":"Problemak ebazteko, hainbat estrategia erabiliz","es":"Resolviera problemas utilizando diversas estrategias"},{"eu":"Beren burua kontraste-egoeran jartzeko","es":"Contrastara sus propias ideas"},{"eu":"Atzerantz edo alderantziz lan egiteko","es":"Trabajara hacia atrás o de forma inversa"},{"eu":"Kontraadibide bat erabili","es":"Utilizara un contraejemplo"},{"eu":"Beste batzuk:","es":"Otros:"}]}]},{"type":"textarea","label_eu":"Inplikazio kognitiboari buruz arreta deitu zizkizuten alderdiak:","label_es":"Aspectos que te llamaron la atención sobre la implicación cognitiva:"}]},{"type":"likert_block","title_eu":"II. Laburpen orokorrak","title_es":"II. Resúmenes generales","items":[{"label_eu":"Irakaskuntza-prozesuan benetako eskakizun intelektualak eskaini zitzaizkien ikasleei","label_es":"En el proceso de enseñanza se ofrecieron al alumnado auténticas exigencias intelectuales","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Ikasleen ulermena lehentasun handia izan zen irakaskuntza-prozesuan","label_es":"La comprensión del alumnado fue una prioridad importante en el proceso de enseñanza","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Ikasgelan, hainbat pentsamendu-ikuspegi edo ideia-mota azaldu zitzaizkien ikasleei","label_es":"En el aula se expusieron al alumnado diversos enfoques de pensamiento o tipos de ideas","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Praktikatzeko denbora kantitatea izan zen…","label_es":"La cantidad de tiempo destinada a la práctica fue…","options":[{"eu":"Gutxiegi","es":"Insuficiente"},{"eu":"Behar den huraxe","es":"Adecuada"},{"eu":"Sobera","es":"Excesiva"}]},{"label_eu":"Denbora eman zitzaien ikasleei autoebaluatzeko eta autoebaluatzeko","label_es":"Se dio tiempo al alumnado para autoevaluarse y coevaluarse","options":[{"eu":"Gutxiegi","es":"Insuficiente"},{"eu":"Behar den huraxe","es":"Adecuada"},{"eu":"Gehiegizkoa","es":"Excesiva"}]},{"label_eu":"Irakas jardunean teknologia erabili zen kontzeptuen ulermena bultzatzeko","label_es":"En la práctica docente se utilizó tecnología para impulsar la comprensión de conceptos","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"type":"textarea","label_eu":"Zerbait desberdina egingo zenuen gela honetan ikasleen inplikazio intelektualari dagokionez?","label_es":"¿Harías algo diferente en esta aula en relación con la implicación intelectual del alumnado?"}]}]},{"id":"ebaluazioa","title_eu":"Ulermenerako ebaluazioa","title_es":"Evaluación para la comprensión","sections":[{"type":"custom_blocks","title_eu":"I. Behaketaren grafikoa","title_es":"I. Gráfico de observación","blocks":[{"title_eu":"Arrazoibidea eta azalpena","title_es":"Razonamiento y explicación","items":[{"label_eu":"Irakasleak ikasleei eskatzen die azal dezatela lanean erabilitako arrazoibidea","label_es":"El profesorado pide al alumnado que explique el razonamiento utilizado en su trabajo","options":[{"eu":"Gutxitan","es":"Rara vez"},{"eu":"Batzuetan","es":"A veces"},{"eu":"Sarritan","es":"Frecuentemente"},{"eu":"Askotan","es":"Muchas veces"}]},{"label_eu":"Irakasleak ikasleek ulertzen dutena eta ulertzen ez dutena berrikusten du","label_es":"El profesorado revisa lo que el alumnado comprende y lo que no comprende","options":[{"eu":"Gutxitan","es":"Rara vez"},{"eu":"Batzuetan","es":"A veces"},{"eu":"Sarritan","es":"Frecuentemente"},{"eu":"Askotan","es":"Muchas veces"}]},{"label_eu":"Irakasleak gehiago balioesten du ikasleen pentsamendua erantzunen zuzentasuna baino","label_es":"El profesorado valora más el pensamiento del alumnado que la corrección de las respuestas","options":[{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"}]},{"label_eu":"Komentarioak izaten dira gehienetan","label_es":"Los comentarios suelen consistir principalmente en","options":[{"eu":"Irakasleari erantzun zuzena ematea","es":"Dar la respuesta correcta al profesorado"},{"eu":"Joan-etorriko trukea ikaslearekin","es":"Un intercambio de ida y vuelta con el alumnado"},{"eu":"Gelako eztabaida bat","es":"Una discusión en clase"}]}]},{"title_eu":"Feedbackaren kalitatea","title_es":"Calidad del feedback","items":[{"label_eu":"Irakasleak bere lanari edo ideiei buruzko iruzkinak egiten dizkie ikasleei","label_es":"El profesorado hace comentarios al alumnado sobre su trabajo o sus ideas","options":[{"eu":"Gutxitan","es":"Rara vez"},{"eu":"Batzuetan","es":"A veces"},{"eu":"Sarritan","es":"Frecuentemente"},{"eu":"Askotan","es":"Muchas veces"}]},{"type":"checkboxes","label_eu":"Iruzkinak (hautatu nahi beste) funtziora bideratzen dira","label_es":"Los comentarios se orientan a (marca todas las que procedan)","options":[{"eu":"Zehaztasuna","es":"precisión"},{"eu":"Metodoa","es":"método"},{"eu":"Arrazoibidea","es":"razonamiento"},{"eu":"Laudorio hutsak","es":"solo elogios"}]},{"label_eu":"Iruzkinak ikasleen pentsamendu aurreratuagoa bultzatzeko erabiltzen dira","label_es":"Los comentarios se utilizan para impulsar un pensamiento más avanzado del alumnado","options":[{"eu":"Gutxitan","es":"Rara vez"},{"eu":"Batzuetan","es":"A veces"},{"eu":"Sarritan","es":"Frecuentemente"}]},{"label_eu":"Irakasleak pistak edo iradokizunak ematen ditu, ikasleen lanaren ereduetan oinarrituta","label_es":"El profesorado ofrece pistas o sugerencias basadas en patrones del trabajo del alumnado","options":[{"eu":"Bai","es":"Sí"},{"eu":"Ez","es":"No"}]}]},{"title_eu":"Egokitzapena eta aurrerabidea","title_es":"Ajuste y avance","items":[{"label_eu":"Irakaskuntza ikasleek esaten edo egiten dutenari egokitzen zaio","label_es":"La enseñanza se ajusta a lo que el alumnado dice o hace","options":[{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"}]},{"label_eu":"Ikasleen zailtasunak direla eta, irakasleak materiala berrikusi edo azalpenak ematen ditu","label_es":"Debido a las dificultades del alumnado, el profesorado revisa el material o aporta explicaciones","options":[{"eu":"Bai","es":"Sí"},{"eu":"Ez","es":"No"},{"eu":"Ikasleek ez zuten zailtasunik izan","es":"El alumnado no tuvo dificultades"}]},{"label_eu":"Ikasleen lana eta ideiak ongi txertatuta daude ikasgelan","label_es":"El trabajo y las ideas del alumnado están bien integrados en el aula","options":[{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"}]}]},{"type":"textarea","label_eu":"Ikaslearen ulermenerako ebaluazioari buruzko gauza deigarriak:","label_es":"Aspectos llamativos sobre la evaluación para la comprensión del alumnado:"}]},{"type":"likert_block","title_eu":"II. Laburpen orokorrak","title_es":"II. Resúmenes generales","items":[{"label_eu":"Irakasleak ikasleak animatu zituen beren pentsamendua xehetasunez deskribatzera","label_es":"El profesorado animó al alumnado a describir su pensamiento con detalle","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Irakasleak animatu zituen ikasleak adierazi zituzten ideiak argiago azaltzeko.","label_es":"El profesorado animó al alumnado a explicar con mayor claridad las ideas que expresaba.","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Ikasleek aukera izan zuten besteen ideietan oinarritzeko.","label_es":"El alumnado tuvo la oportunidad de apoyarse en las ideas de otras personas.","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Irakasleak sarritan kalitatezko feedbacka eman zien ikasleei.","label_es":"El profesorado ofreció con frecuencia feedback de calidad al alumnado.","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"label_eu":"Irakasleak ziurtatu zuen ikasleen akatsak edo okerreko usteak zuzenduko zituela.","label_es":"El profesorado se aseguró de corregir los errores o ideas equivocadas del alumnado.","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"},{"eu":"Ez zen akatsik gertatu","es":"No se produjeron errores"}]},{"label_eu":"Ikasleek adierazitako ideiek baldintzatu zuten nola egin zuen aurrera irakas jardunak","label_es":"Las ideas expresadas por el alumnado condicionaron cómo avanzó la práctica docente","options":[{"eu":"Oso ados","es":"Muy de acuerdo"},{"eu":"Ados","es":"De acuerdo"},{"eu":"Pixka bat ados","es":"Algo de acuerdo"},{"eu":"Ez nago ados","es":"En desacuerdo"},{"eu":"Oso desados","es":"Muy en desacuerdo"}]},{"type":"textarea","label_eu":"Beste zerbait egingo zenuen irakas jardun honetan ikasleen pentsamenduan eragiteko?","label_es":"¿Harías algo más en esta práctica docente para influir en el pensamiento del alumnado?"}]}]}]};
+
+let currentLang = localStorage.getItem('ui_lang') || 'eu';
+function setLanguage(lang){
+  currentLang = lang === 'es' ? 'es' : 'eu';
+  document.documentElement.lang = currentLang;
+  document.body.classList.toggle('lang-eu', currentLang === 'eu');
+  document.body.classList.toggle('lang-es', currentLang === 'es');
+  const euBtn = document.getElementById('btn-lang-eu');
+  const esBtn = document.getElementById('btn-lang-es');
+  if(euBtn) euBtn.classList.toggle('active', currentLang === 'eu');
+  if(esBtn) esBtn.classList.toggle('active', currentLang === 'es');
+  localStorage.setItem('ui_lang', currentLang);
+  updateSummaryAndProgress();
+}
+
+function bilingualHTML(eu, es){
+  return `<div class="bilingual"><span class="eu">${eu ?? ''}</span><span class="es">${es ?? ''}</span></div>`;
+}
+function esc(str){
+  return String(str ?? '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function sanitizeId(text){
+  return String(text ?? '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+}
+function getOptionLabel(options, value, lang='eu'){
+  const found = (options || []).find(opt => opt.eu === value);
+  if(!found) return '';
+  return found[lang] || found.eu || '';
+}
+function optionBadge(name, value, option){
+  const id = `${name}_${sanitizeId(value)}`;
+  return `<span class="opt">
+    <input id="${id}" type="radio" name="${name}" value="${esc(value)}" data-track="group">
+    <label for="${id}">${bilingualHTML(option.eu, option.es)}</label>
+  </span>`;
+}
+function checkboxItem(name, value, option){
+  const id = `${name}_${sanitizeId(value)}`;
+  return `<label class="check-item" for="${id}">
+    <input id="${id}" type="checkbox" name="${name}" value="${esc(value)}" data-track="field">
+    ${bilingualHTML(option.eu, option.es)}
+  </label>`;
+}
+function textareaBlock(name, eu, es){
+  return `<div class="question-card single textarea-wrap">
+    <div class="prompt">${bilingualHTML(eu, es)}</div>
+    <textarea data-autosave="${name}" data-track="field"></textarea>
+  </div>`;
+}
+function renderMatrixSection(section, dimId){
+  let out = `<section class="section"><h3 class="section-title">${bilingualHTML(section.title_eu, section.title_es)}</h3>`;
+  section.groups.forEach((group, gIndex) => {
+    out += `<div class="group-card">
+      <h4>${bilingualHTML(group.group_eu, group.group_es)}</h4>
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th style="width:23%">${bilingualHTML('Itema','Ítem')}</th>
+            <th style="width:24%">${bilingualHTML(group.question1_eu, group.question1_es)}</th>
+            <th style="width:21%">${bilingualHTML(group.question2_eu, group.question2_es)}</th>
+            <th style="width:32%">${bilingualHTML(section.notes_eu, section.notes_es)}</th>
+          </tr>
+        </thead>
+        <tbody>`;
+    group.items.forEach((item, i) => {
+      const base = `${dimId}_${gIndex}_${i}`;
+      out += `<tr>
+        <td class="matrix-item">${bilingualHTML(item.eu, item.es)}</td>
+        <td><div class="opt-row">${group.options1.map(opt => optionBadge(base+'_a', opt.eu, opt)).join('')}</div></td>
+        <td><div class="opt-row">${group.options2.map(opt => optionBadge(base+'_b', opt.eu, opt)).join('')}</div></td>
+        <td class="notes-box"><textarea data-autosave="${base}_note" data-track="field"></textarea></td>
+      </tr>`;
+    });
+    out += `</tbody></table></div>`;
+  });
+  out += `</section>`;
+  return out;
+}
+function renderLikertSection(section, dimId){
+  let out = `<section class="section"><h3 class="section-title">${bilingualHTML(section.title_eu, section.title_es)}</h3>`;
+  section.items.forEach((item, idx) => {
+    if(item.type === 'textarea'){
+      out += textareaBlock(`${dimId}_text_${idx}`, item.label_eu, item.label_es);
+      return;
+    }
+    const name = `${dimId}_likert_${idx}`;
+    out += `<div class="question-card">
+      <div class="prompt">${bilingualHTML(item.label_eu, item.label_es)}</div>
+      <div class="opt-row">${item.options.map(opt => optionBadge(name, opt.eu, opt)).join('')}</div>
+    </div>`;
+  });
+  out += `</section>`;
+  return out;
+}
+function renderGroupedSection(section, dimId){
+  let out = `<section class="section"><h3 class="section-title">${bilingualHTML(section.title_eu, section.title_es)}</h3>`;
+  (section.groups || []).forEach((group, gIdx) => {
+    if(group.type === 'textarea'){
+      out += textareaBlock(`${dimId}_group_text_${gIdx}`, group.label_eu, group.label_es);
+      return;
+    }
+    out += `<div class="group-card"><h4>${bilingualHTML(group.group_eu, group.group_es)}</h4>
+      <table class="compact-table">
+        <thead><tr>
+          <th style="width:46%">${bilingualHTML('Adierazlea','Indicador')}</th>
+          <th style="width:54%">${bilingualHTML('Balorazioa','Valoración')}</th>
+        </tr></thead><tbody>`;
+    (group.items || []).forEach((item, iIdx) => {
+      const name = `${dimId}_group_${gIdx}_${iIdx}`;
+      out += `<tr><td class="matrix-item">${bilingualHTML(item.label_eu, item.label_es)}</td>
+        <td><div class="opt-row">${(item.options || []).map(opt => optionBadge(name, opt.eu, opt)).join('')}</div></td></tr>`;
+    });
+    out += `</tbody></table></div>`;
+  });
+  out += `</section>`;
+  return out;
+}
+function renderCustomSection(section, dimId){
+  let out = `<section class="section"><h3 class="section-title">${bilingualHTML(section.title_eu, section.title_es)}</h3><div class="grid-2">`;
+  (section.blocks || []).forEach((block, bIdx) => {
+    if(block.type === 'textarea'){
+      out += `<div>${textareaBlock(`${dimId}_custom_text_${bIdx}`, block.label_eu, block.label_es)}</div>`;
+      return;
+    }
+    out += `<div class="block-card"><h4>${bilingualHTML(block.title_eu, block.title_es)}</h4>
+      <table class="compact-table"><tbody>`;
+    (block.items || []).forEach((item, iIdx) => {
+      const key = `${dimId}_block_${bIdx}_${iIdx}`;
+      if(item.type === 'checkboxes'){
+        out += `<tr><td class="matrix-item" style="width:44%">${bilingualHTML(item.label_eu, item.label_es)}</td>
+          <td><div class="checkbox-grid">${(item.options || []).map(opt => checkboxItem(key, opt.eu, opt)).join('')}</div></td></tr>`;
+      } else {
+        out += `<tr><td class="matrix-item" style="width:44%">${bilingualHTML(item.label_eu, item.label_es)}</td>
+          <td><div class="opt-row">${(item.options || []).map(opt => optionBadge(key, opt.eu, opt)).join('')}</div></td></tr>`;
+      }
+    });
+    out += `</tbody></table></div>`;
+  });
+  out += `</div></section>`;
+  return out;
+}
+function navFooter(idx){
+  const prev = idx > 0 ? DATA.dimensions[idx-1].id : null;
+  const next = idx < DATA.dimensions.length-1 ? DATA.dimensions[idx+1].id : 'summary';
+  return `<div class="panel-nav">${prev ? `<button class="nav-btn" type="button" onclick="setActiveTab('${prev}')"><span class="eu">← Atzera</span><span class="es">← Atrás</span></button>` : '<span class="spacer"></span>'}<button class="nav-btn primary" type="button" onclick="setActiveTab('${next}')"><span class="eu">Hurrengoa →</span><span class="es">Siguiente →</span></button></div>`;
+}
+function renderDimension(dim, idx){
+  let body = '';
+  (dim.sections || []).forEach((section, idx) => {
+    if(section.type === 'matrix_two_scales') body += renderMatrixSection(section, `${dim.id}_${idx}`);
+    if(section.type === 'likert_block') body += renderLikertSection(section, `${dim.id}_${idx}`);
+    if(section.type === 'grouped_questions') body += renderGroupedSection(section, `${dim.id}_${idx}`);
+    if(section.type === 'custom_blocks') body += renderCustomSection(section, `${dim.id}_${idx}`);
+  });
+  return `<section class="panel" id="panel-${dim.id}">
+    <div class="panel-head">
+      <div>
+        <h2>${bilingualHTML(dim.title_eu, dim.title_es)}</h2>
+      </div>
+      <small id="dim-progress-${dim.id}">0%</small>
+    </div>
+    ${body}
+    ${navFooter(idx)}
+  </section>`;
+}
+function renderSummaryPanel(){
+  return `<section class="summary-panel panel" id="panel-summary">
+    <div class="panel-head">
+      <div><h2>${bilingualHTML('Laburpen automatikoa','Resumen automático')}</h2></div>
+      <small>${bilingualHTML('Amaierako ikuspegi laburra','Vista final breve')}</small>
+    </div>
+    <div class="summary-grid">
+      <div class="summary-box">
+        <h3>${bilingualHTML('Adierazle nagusiak','Indicadores principales')}</h3>
+        <div class="kpis">
+          <div class="kpi"><span class="es">Osaketa / Cumplimentación</span><strong id="kpi-progress">0%</strong></div>
+          <div class="kpi"><span class="es">Erantzun-markak / Respuestas marcadas</span><strong id="kpi-answers">0</strong></div>
+          <div class="kpi"><span class="es">Testu-oharrak / Notas escritas</span><strong id="kpi-notes">0</strong></div>
+        </div>
+        <h3 style="margin-top:12px">${bilingualHTML('Sintesi laburra','Síntesis breve')}</h3>
+        <ul class="auto-summary" id="auto-summary-list"></ul>
+      </div>
+      <div class="summary-box">
+        <h3>${bilingualHTML('Dimentsio bakoitzeko osatutakoa','Completado por dimensión')}</h3>
+        <div class="dim-summary" id="dim-summary"></div>
+      </div>
+    </div>
+    <div class="panel-nav"><button class="nav-btn" type="button" onclick="setActiveTab(DATA.dimensions[DATA.dimensions.length-1].id)"><span class="eu">← Atzera</span><span class="es">← Atrás</span></button><span class="spacer"></span></div>
+  </section>`;
+}
+function buildTabs(){
+  const tabs = DATA.dimensions.map((dim, idx) => 
+    `<button type="button" class="tab-btn ${idx===0?'active':''}" data-target="${dim.id}">
+      <span class="tab-index">${idx+1}</span><span class="eu">${esc(dim.title_eu)}</span><span class="es">${esc(dim.title_es)}</span>
+    </button>`).join('') +
+    `<button type="button" class="tab-btn summary-tab" data-target="summary">${bilingualHTML('Laburpena','Resumen')}</button>`;
+  document.getElementById('tabs').innerHTML = tabs;
+}
+function buildPanels(){
+  document.getElementById('panels').innerHTML = DATA.dimensions.map((dim,idx)=>renderDimension(dim,idx)).join('') + renderSummaryPanel();
+}
+function setActiveTab(target){
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.target === target));
+  document.querySelectorAll('.panel').forEach(panel => panel.classList.remove('active'));
+  const panel = document.getElementById(`panel-${target}`);
+  if(panel) panel.classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function bindTabs(){
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => setActiveTab(btn.dataset.target));
+  });
+}
+function bindAutosave(){
+  document.querySelectorAll('input[data-autosave], textarea[data-autosave]').forEach(el => {
+    el.addEventListener('input', () => {
+      localStorage.setItem(el.dataset.autosave, el.value);
+      updateSummaryAndProgress();
+    });
+  });
+  document.querySelectorAll('input[type="radio"]').forEach(el => {
+    el.addEventListener('change', () => {
+      localStorage.setItem(el.name, el.value);
+      updateSummaryAndProgress();
+    });
+  });
+  document.querySelectorAll('input[type="checkbox"][data-track="field"]').forEach(el => {
+    el.addEventListener('change', () => {
+      localStorage.setItem(el.id, String(el.checked));
+      updateSummaryAndProgress();
+    });
+  });
+}
+function restoreAutosaved(){
+  document.querySelectorAll('input[data-autosave], textarea[data-autosave]').forEach(el => {
+    const value = localStorage.getItem(el.dataset.autosave);
+    if(value !== null) el.value = value;
+  });
+  document.querySelectorAll('input[type="radio"]').forEach(el => {
+    const value = localStorage.getItem(el.name);
+    if(value !== null && el.value === value) el.checked = true;
+  });
+  document.querySelectorAll('input[type="checkbox"][data-track="field"]').forEach(el => {
+    const value = localStorage.getItem(el.id);
+    if(value !== null) el.checked = value === 'true';
+  });
+}
+function getCountsForContainer(container){
+  const radioGroups = [...new Set([...container.querySelectorAll('input[type="radio"][data-track="group"]')].map(el => el.name))];
+  const textareas = [...container.querySelectorAll('textarea[data-track="field"]')];
+  const checkboxes = [...container.querySelectorAll('input[type="checkbox"][data-track="field"]')];
+  let done = 0;
+  radioGroups.forEach(name => { if(container.querySelector(`input[name="${CSS.escape(name)}"]:checked`)) done++; });
+  textareas.forEach(el => { if((el.value || '').trim()) done++; });
+  checkboxes.forEach(el => { if(el.checked) done++; });
+  return {done, total: radioGroups.length + textareas.length + checkboxes.length};
+}
+function computeProgress(){
+  const all = getCountsForContainer(document.body);
+  const pct = all.total ? Math.round((all.done / all.total) * 100) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-text').textContent = pct + '%';
+  document.getElementById('completion-caption').textContent = `${all.done} / ${all.total}`;
+  DATA.dimensions.forEach(dim => {
+    const panel = document.getElementById(`panel-${dim.id}`);
+    const counts = getCountsForContainer(panel);
+    const dimPct = counts.total ? Math.round((counts.done / counts.total) * 100) : 0;
+    const label = document.getElementById(`dim-progress-${dim.id}`);
+    if(label) label.textContent = `${dimPct}% · ${counts.done}/${counts.total}`;
+  });
+  return {all, pct};
+}
+function getTextValue(key){
+  const el = document.querySelector(`[data-autosave="${key}"]`);
+  return el ? (el.value || '') : '';
+}
+function getRadioValue(name){
+  const checked = document.querySelector(`input[name="${CSS.escape(name)}"]:checked`);
+  return checked ? checked.value : '';
+}
+function getCheckboxValues(name){
+  return [...document.querySelectorAll(`input[name="${CSS.escape(name)}"]:checked`)].map(el => el.value);
+}
+function collectDetailedRows(){
+  const rows = [];
+  DATA.dimensions.forEach(dim => {
+    (dim.sections || []).forEach((section, sIdx) => {
+      const dimKey = `${dim.id}_${sIdx}`;
+      if(section.type === 'matrix_two_scales'){
+        (section.groups || []).forEach((group, gIdx) => {
+          (group.items || []).forEach((item, iIdx) => {
+            const base = `${dimKey}_${gIdx}_${iIdx}`;
+            rows.push({
+              dimension_eu: dim.title_eu,
+              dimension_es: dim.title_es,
+              section_eu: section.title_eu,
+              section_es: section.title_es,
+              block_eu: group.group_eu,
+              block_es: group.group_es,
+              item_eu: item.eu,
+              item_es: item.es,
+              prompt1_eu: group.question1_eu,
+              prompt1_es: group.question1_es,
+              answer1_eu: getRadioValue(base+'_a'),
+              answer1_es: getOptionLabel(group.options1, getRadioValue(base+'_a'), 'es'),
+              prompt2_eu: group.question2_eu,
+              prompt2_es: group.question2_es,
+              answer2_eu: getRadioValue(base+'_b'),
+              answer2_es: getOptionLabel(group.options2, getRadioValue(base+'_b'), 'es'),
+              note_eu: getTextValue(base+'_note'),
+              note_es: getTextValue(base+'_note')
+            });
+          });
+        });
+      }
+      if(section.type === 'likert_block'){
+        (section.items || []).forEach((item, idx) => {
+          if(item.type === 'textarea'){
+            rows.push({
+              dimension_eu: dim.title_eu, dimension_es: dim.title_es,
+              section_eu: section.title_eu, section_es: section.title_es,
+              block_eu: '', block_es: '',
+              item_eu: item.label_eu, item_es: item.label_es,
+              prompt1_eu: '', prompt1_es: '',
+              answer1_eu: getTextValue(`${dimKey}_text_${idx}`),
+              answer1_es: getTextValue(`${dimKey}_text_${idx}`),
+              prompt2_eu: '', prompt2_es: '',
+              answer2_eu: '', answer2_es: '',
+              note_eu: '', note_es: ''
+            });
+          } else {
+            const value = getRadioValue(`${dimKey}_likert_${idx}`);
+            rows.push({
+              dimension_eu: dim.title_eu, dimension_es: dim.title_es,
+              section_eu: section.title_eu, section_es: section.title_es,
+              block_eu: '', block_es: '',
+              item_eu: item.label_eu, item_es: item.label_es,
+              prompt1_eu: '', prompt1_es: '',
+              answer1_eu: value,
+              answer1_es: getOptionLabel(item.options, value, 'es'),
+              prompt2_eu: '', prompt2_es: '',
+              answer2_eu: '', answer2_es: '',
+              note_eu: '', note_es: ''
+            });
+          }
+        });
+      }
+      if(section.type === 'grouped_questions'){
+        (section.groups || []).forEach((group, gIdx) => {
+          if(group.type === 'textarea'){
+            rows.push({
+              dimension_eu: dim.title_eu, dimension_es: dim.title_es,
+              section_eu: section.title_eu, section_es: section.title_es,
+              block_eu: '', block_es: '',
+              item_eu: group.label_eu, item_es: group.label_es,
+              prompt1_eu: '', prompt1_es: '',
+              answer1_eu: getTextValue(`${dimKey}_group_text_${gIdx}`),
+              answer1_es: getTextValue(`${dimKey}_group_text_${gIdx}`),
+              prompt2_eu: '', prompt2_es: '',
+              answer2_eu: '', answer2_es: '',
+              note_eu: '', note_es: ''
+            });
+            return;
+          }
+          (group.items || []).forEach((item, iIdx) => {
+            const value = getRadioValue(`${dimKey}_group_${gIdx}_${iIdx}`);
+            rows.push({
+              dimension_eu: dim.title_eu, dimension_es: dim.title_es,
+              section_eu: section.title_eu, section_es: section.title_es,
+              block_eu: group.group_eu, block_es: group.group_es,
+              item_eu: item.label_eu, item_es: item.label_es,
+              prompt1_eu: '', prompt1_es: '',
+              answer1_eu: value,
+              answer1_es: getOptionLabel(item.options, value, 'es'),
+              prompt2_eu: '', prompt2_es: '',
+              answer2_eu: '', answer2_es: '',
+              note_eu: '', note_es: ''
+            });
+          });
+        });
+      }
+      if(section.type === 'custom_blocks'){
+        (section.blocks || []).forEach((block, bIdx) => {
+          if(block.type === 'textarea'){
+            rows.push({
+              dimension_eu: dim.title_eu, dimension_es: dim.title_es,
+              section_eu: section.title_eu, section_es: section.title_es,
+              block_eu: '', block_es: '',
+              item_eu: block.label_eu, item_es: block.label_es,
+              prompt1_eu: '', prompt1_es: '',
+              answer1_eu: getTextValue(`${dimKey}_custom_text_${bIdx}`),
+              answer1_es: getTextValue(`${dimKey}_custom_text_${bIdx}`),
+              prompt2_eu: '', prompt2_es: '',
+              answer2_eu: '', answer2_es: '',
+              note_eu: '', note_es: ''
+            });
+            return;
+          }
+          (block.items || []).forEach((item, iIdx) => {
+            if(item.type === 'checkboxes'){
+              const values = getCheckboxValues(`${dimKey}_block_${bIdx}_${iIdx}`);
+              rows.push({
+                dimension_eu: dim.title_eu, dimension_es: dim.title_es,
+                section_eu: section.title_eu, section_es: section.title_es,
+                block_eu: block.title_eu, block_es: block.title_es,
+                item_eu: item.label_eu, item_es: item.label_es,
+                prompt1_eu: '', prompt1_es: '',
+                answer1_eu: values.join('; '),
+                answer1_es: values.map(v => getOptionLabel(item.options, v, 'es')).join('; '),
+                prompt2_eu: '', prompt2_es: '',
+                answer2_eu: '', answer2_es: '',
+                note_eu: '', note_es: ''
+              });
+            } else {
+              const value = getRadioValue(`${dimKey}_block_${bIdx}_${iIdx}`);
+              rows.push({
+                dimension_eu: dim.title_eu, dimension_es: dim.title_es,
+                section_eu: section.title_eu, section_es: section.title_es,
+                block_eu: block.title_eu, block_es: block.title_es,
+                item_eu: item.label_eu, item_es: item.label_es,
+                prompt1_eu: '', prompt1_es: '',
+                answer1_eu: value,
+                answer1_es: getOptionLabel(item.options, value, 'es'),
+                prompt2_eu: '', prompt2_es: '',
+                answer2_eu: '', answer2_es: '',
+                note_eu: '', note_es: ''
+              });
+            }
+          });
+        });
+      }
+    });
+  });
+  return rows;
+}
+function buildSummaryData(){
+  const {all, pct} = computeProgress();
+  const rows = collectDetailedRows();
+  const noteTextareas = [...document.querySelectorAll('textarea[data-track="field"]')].filter(el => (el.value || '').trim()).length;
+  const textNotesCount = noteTextareas + (getTextValue('meta_notes').trim() ? 1 : 0);
+  const perDim = DATA.dimensions.map(dim => {
+    const panel = document.getElementById(`panel-${dim.id}`);
+    const counts = getCountsForContainer(panel);
+    const pctDim = counts.total ? Math.round((counts.done / counts.total) * 100) : 0;
+    return {id:dim.id, eu:dim.title_eu, es:dim.title_es, done:counts.done, total:counts.total, pct:pctDim};
+  });
+  const topDimsEu = [...perDim].sort((a,b) => b.pct - a.pct).slice(0,3).map(d => d.eu).filter(Boolean);
+  const topDimsEs = [...perDim].sort((a,b) => b.pct - a.pct).slice(0,3).map(d => d.es).filter(Boolean);
+  const summaryLinesEu = [
+    `Tresnaren osaketa-maila ${pct}% da (${all.done}/${all.total}).`,
+    topDimsEu.length ? `Osaketa handiena duten dimentsioak: ${topDimsEu.join(', ')}.` : '',
+    `Testu-ohar beteak: ${textNotesCount}.`
+  ].filter(Boolean);
+  const summaryLinesEs = [
+    `El nivel de cumplimentación es del ${pct}% (${all.done}/${all.total}).`,
+    topDimsEs.length ? `Dimensiones con mayor cumplimentación: ${topDimsEs.join(', ')}.` : '',
+    `Notas escritas cumplimentadas: ${textNotesCount}.`
+  ].filter(Boolean);
+  const summaryLines = summaryLinesEu.map((line, i) => `${line} / ${summaryLinesEs[i] || ''}`);
+  return {overall:{done:all.done,total:all.total,pct}, rows, perDim, textNotesCount, summaryLines, summaryLinesEu, summaryLinesEs};
+}
+function updateSummaryAndProgress(){
+  const summary = buildSummaryData();
+  document.getElementById('kpi-progress').textContent = summary.overall.pct + '%';
+  document.getElementById('kpi-answers').textContent = summary.overall.done;
+  document.getElementById('kpi-notes').textContent = summary.textNotesCount;
+  document.getElementById('auto-summary-list').innerHTML = (currentLang === 'es' ? summary.summaryLinesEs : summary.summaryLinesEu).map(line => `<li>${esc(line)}</li>`).join('');
+  document.getElementById('dim-summary').innerHTML = summary.perDim.map(dim => `
+    <div class="dim-row">
+      <div class="dim-row-head">
+        <div>${bilingualHTML(dim.eu, dim.es)}</div>
+        <strong>${dim.pct}%</strong>
+      </div>
+      <div class="mini-bar"><span style="width:${dim.pct}%"></span></div>
+      <small>${dim.done}/${dim.total}</small>
+    </div>`).join('');
+}
+function metadataEntries(){
+  return [
+    ['Irakaslea / Behatua','Docente / Persona observada', getTextValue('meta_teacher')],
+    ['Behatzailea','Persona observadora', getTextValue('meta_observer')],
+    ['Data','Fecha', getTextValue('meta_date')],
+    ['Arloa / Ikasgaia','Área / Materia', getTextValue('meta_subject')],
+    ['Maila / Taldea','Nivel / Grupo', getTextValue('meta_group')],
+    ['Saioaren testuingurua','Contexto de la sesión', getTextValue('meta_context')],
+    ['Hasierako oharrak','Observaciones iniciales', getTextValue('meta_notes')],
+  ];
+}
+function buildExportHtml(){
+  const logoData = 'data:image/png;base64,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';
+  const summary = buildSummaryData();
+  const rows = summary.rows;
+  const grouped = {};
+  rows.forEach(row => {
+    const key = row.dimension_eu + '||' + row.section_eu;
+    if(!grouped[key]) grouped[key] = [];
+    grouped[key].push(row);
+  });
+  const metaRows = metadataEntries().map(([eu,es,val]) => `
+    <tr><th>${esc(eu)}<br><span style="color:#666;font-weight:500">${esc(es)}</span></th><td>${esc(val || '—')}</td></tr>
+  `).join('');
+  const summaryRows = summary.perDim.map(dim => `
+    <tr><td>${esc(dim.eu)}<br><span style="color:#666">${esc(dim.es)}</span></td><td>${dim.done}/${dim.total}</td><td>${dim.pct}%</td></tr>
+  `).join('');
+  const contentSections = Object.entries(grouped).map(([key, items]) => {
+    const first = items[0];
+    const body = items.map(row => `
+      <tr>
+        <td>${esc(row.block_eu || '')}${row.block_es ? `<br><span style="color:#666">${esc(row.block_es)}</span>` : ''}</td>
+        <td>${esc(row.item_eu || '')}${row.item_es ? `<br><span style="color:#666">${esc(row.item_es)}</span>` : ''}</td>
+        <td>${row.prompt1_eu ? `<strong>${esc(row.prompt1_eu)}</strong><br><span style="color:#666">${esc(row.prompt1_es || '')}</span><br>` : ''}${esc(row.answer1_eu || '')}${row.answer1_es ? `<br><span style="color:#666">${esc(row.answer1_es)}</span>` : ''}</td>
+        <td>${row.prompt2_eu ? `<strong>${esc(row.prompt2_eu)}</strong><br><span style="color:#666">${esc(row.prompt2_es || '')}</span><br>` : ''}${esc(row.answer2_eu || '')}${row.answer2_es ? `<br><span style="color:#666">${esc(row.answer2_es)}</span>` : ''}</td>
+        <td>${esc(row.note_eu || '')}</td>
+      </tr>
+    `).join('');
+    return `
+      <h2 style="margin:26px 0 8px;font-family:'Century Gothic',Calibri,Arial,sans-serif;font-size:14pt;color:#003F68">${esc(first.dimension_eu)} / ${esc(first.dimension_es)}</h2>
+      <h3 style="margin:0 0 8px;font-family:'Century Gothic',Calibri,Arial,sans-serif;font-size:14pt">${esc(first.section_eu)} / ${esc(first.section_es)}</h3>
+      <table style="width:100%;border-collapse:collapse;margin-bottom:18px;font-size:11px">
+        <thead>
+          <tr>
+            <th style="border:1px solid #cdd8e2;padding:6px;background:#eef4f8;text-align:left">Blokea / Bloque</th>
+            <th style="border:1px solid #cdd8e2;padding:6px;background:#eef4f8;text-align:left">Itema / Ítem</th>
+            <th style="border:1px solid #cdd8e2;padding:6px;background:#eef4f8;text-align:left">1. erantzuna / 1. respuesta</th>
+            <th style="border:1px solid #cdd8e2;padding:6px;background:#eef4f8;text-align:left">2. erantzuna / 2. respuesta</th>
+            <th style="border:1px solid #cdd8e2;padding:6px;background:#eef4f8;text-align:left">Oharra / Nota</th>
+          </tr>
+        </thead>
+        <tbody>${body}</tbody>
+      </table>`;
+  }).join('');
+  return `<!DOCTYPE html>
+  <html><head><meta charset="utf-8"><title>Irakasle jarduna berrikusteko tresna</title></head>
+  <body style="font-family:Calibri,Arial,sans-serif;font-size:12pt;color:#1f2a35;padding:24px">
+    <h1 style="margin:0 0 6px;font-family:'Century Gothic',Calibri,Arial,sans-serif;font-size:14pt;color:#003F68;white-space:nowrap">Irakasle jarduna berrikusteko tresna</h1>
+    <p style="margin:0 0 12px;color:#5b6773">Herramienta para revisar la práctica docente</p>
+    <p style="border-left:5px solid #00558C;padding:8px 10px;background:#f3f6f8;font-size:11pt">
+      <strong>Oinarria eta egokitzapena / Base y adaptación</strong><br>
+      OECD: <em>Global Teaching Insights</em> — https://www.oecd.org/en/about/projects/global-teaching-insights.html<br>
+      Creative Commons: Berritzegune Nagusia 2026. Matematika Ubidea DBH. CC BY-SA.
+    </p>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:20px;font-size:12px">
+      <tbody>${metaRows}</tbody>
+    </table>
+    <h2 style="margin:18px 0 8px;font-family:'Century Gothic',Calibri,Arial,sans-serif;font-size:14pt;color:#003F68">Laburpena / Resumen</h2>
+    <p style="font-size:12px">${esc(summary.summaryLines.join(' '))}</p>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:22px;font-size:12px">
+      <thead><tr>
+        <th style="border:1px solid #cdd8e2;padding:6px;background:#eef4f8;text-align:left">Dimentsioa / Dimensión</th>
+        <th style="border:1px solid #cdd8e2;padding:6px;background:#eef4f8;text-align:left">Osatua / Completado</th>
+        <th style="border:1px solid #cdd8e2;padding:6px;background:#eef4f8;text-align:left">%</th>
+      </tr></thead>
+      <tbody>${summaryRows}</tbody>
+    </table>
+    ${contentSections}
+  </body></html>`;
+}
+function exportDocx(){
+  if(typeof htmlDocx === 'undefined' || typeof saveAs === 'undefined'){
+    alert('DOCX esportazioa ez dago erabilgarri une honetan. / La exportación DOCX no está disponible en este momento.');
+    return;
+  }
+  const content = buildExportHtml();
+  const blob = htmlDocx.asBlob(content);
+  saveAs(blob, 'irakasle-jarduna-berrikusteko-tresna.docx');
+}
+
+function applyWorkbookStyle(ws, opts={}){
+  if(!ws['!ref']) return;
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  const border = {top:{style:'thin',color:{rgb:'CFDBE5'}},bottom:{style:'thin',color:{rgb:'CFDBE5'}},left:{style:'thin',color:{rgb:'CFDBE5'}},right:{style:'thin',color:{rgb:'CFDBE5'}}};
+  for(let R=range.s.r; R<=range.e.r; ++R){
+    for(let C=range.s.c; C<=range.e.c; ++C){
+      const addr = XLSX.utils.encode_cell({r:R,c:C});
+      if(!ws[addr]) continue;
+      const isTitle = R === 0 || (ws[addr].v && String(ws[addr].v).includes('Laburpena / Resumen')) || (ws[addr].v && String(ws[addr].v).includes('Metadatuak / Metadatos')) || (ws[addr].v && String(ws[addr].v).includes('Sintesi laburra'));
+      const isHeader = R === 2 || (opts.headerRows || []).includes(R);
+      ws[addr].s = {
+        font: isTitle ? {name:'Century Gothic', sz:14, bold:true, color:{rgb:'003F68'}} : {name:'Calibri', sz:12, color:{rgb:'1F2A35'}},
+        alignment: {vertical:'top', wrapText:true},
+        border: border
+      };
+      if(isHeader){
+        ws[addr].s.fill = {fgColor:{rgb:'EDF7E4'}};
+        ws[addr].s.font = {name:'Century Gothic', sz:14, bold:true, color:{rgb:'1F2A35'}};
+      }
+      if(R===0){
+        ws[addr].s.fill = {fgColor:{rgb:'EAF2F7'}};
+      }
+    }
+  }
+}
+
+function exportExcel(){
+  if(typeof XLSX === 'undefined'){
+    alert('Excel esportazioa ez dago erabilgarri une honetan. / La exportación Excel no está disponible en este momento.');
+    return;
+  }
+  const summary = buildSummaryData();
+  const wb = XLSX.utils.book_new();
+  const metaRows = [
+    ['Irakasle jarduna berrikusteko tresna','Herramienta para revisar la práctica docente',''],
+    ['OECD: Global Teaching Insights','https://www.oecd.org/en/about/projects/global-teaching-insights.html',''],
+    ['Creative Commons','Berritzegune Nagusia 2026. Matematika Ubidea DBH. CC BY-SA',''],
+    [],
+    ['Metadatuak / Metadatos','',''],
+    ...metadataEntries().map(([eu, es, val]) => [eu, es, val || '']),
+    [],
+    ['Laburpena / Resumen','',''],
+    ['Dimentsioa / Dimensión','Osatua / Completado','%'],
+    ...summary.perDim.map(dim => [dim.eu + ' / ' + dim.es, dim.done + '/' + dim.total, dim.pct + '%']),
+    [],
+    ['Sintesi laburra / Síntesis breve','',''],
+    ...summary.summaryLines.map(line => [line,'',''])
+  ];
+  const ws0 = XLSX.utils.aoa_to_sheet(metaRows);
+  ws0['!cols'] = [{wch:45},{wch:45},{wch:24}];
+  ws0['!rows'] = [{hpt:26},{hpt:22},{hpt:22}];
+  applyWorkbookStyle(ws0, {headerRows:[4,12,18]});
+  XLSX.utils.book_append_sheet(wb, ws0, 'Laburpena');
+
+  DATA.dimensions.forEach(dim => {
+    const rows = [];
+    rows.push([dim.title_eu, dim.title_es, '', '', '', '']);
+    rows.push([]);
+    rows.push(['Atala / Sección','Blokea / Bloque','Itema / Ítem','Galdera / Pregunta','Erantzuna / Respuesta','Oharra / Nota']);
+    summary.rows.filter(r => r.dimension_eu === dim.title_eu).forEach(r => {
+      const q = [r.prompt1_eu, r.prompt2_eu].filter(Boolean).join(' | ');
+      const qEs = [r.prompt1_es, r.prompt2_es].filter(Boolean).join(' | ');
+      const ans = [r.answer1_eu, r.answer2_eu].filter(Boolean).join(' | ');
+      const ansEs = [r.answer1_es, r.answer2_es].filter(Boolean).join(' | ');
+      rows.push([
+        (r.section_eu || '') + (r.section_es ? ' / ' + r.section_es : ''),
+        (r.block_eu || '') + (r.block_es ? ' / ' + r.block_es : ''),
+        (r.item_eu || '') + (r.item_es ? ' / ' + r.item_es : ''),
+        q + (qEs ? ' / ' + qEs : ''),
+        ans + (ansEs ? ' / ' + ansEs : ''),
+        r.note_eu || ''
+      ]);
+    });
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws['!cols'] = [{wch:28},{wch:28},{wch:54},{wch:50},{wch:38},{wch:36}];
+    ws['!rows'] = [{hpt:26},null,{hpt:24}];
+    applyWorkbookStyle(ws, {headerRows:[2]});
+    XLSX.utils.book_append_sheet(wb, ws, dim.title_eu.substring(0,31));
+  });
+  XLSX.writeFile(wb, 'irakasle-jarduna-berrikusteko-tresna.xlsx');
+}
+function printAsPdf(){
+  const exportHtml = buildExportHtml();
+  const win = window.open('', '_blank');
+  if(!win){
+    alert(currentLang === 'eu' ? 'Leiho berria ezin izan da ireki. Baimendu pop-up leihoak PDFa sortzeko.' : 'No se ha podido abrir la nueva ventana. Permite las ventanas emergentes para crear el PDF.');
+    return;
+  }
+  win.document.open();
+  win.document.write(exportHtml);
+  win.document.close();
+  const doPrint = () => { win.focus(); win.print(); };
+  if (win.document.readyState === 'complete') setTimeout(doPrint, 400);
+  else win.addEventListener('load', () => setTimeout(doPrint, 400));
+}
+function downloadHtml(){
+  const blob = new Blob([document.documentElement.outerHTML], {type:'text/html;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'irakasle-jarduna-berrikusteko-tresna.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function resetForm(){
+  const ok = confirm('Ziur zaude? / ¿Seguro?');
+  if(!ok) return;
+  Object.keys(localStorage).forEach(key => {
+    if(key.startsWith('meta_') || key.includes('_')) localStorage.removeItem(key);
+  });
+  document.querySelectorAll('input[type="radio"], input[type="checkbox"]').forEach(el => el.checked = false);
+  document.querySelectorAll('input[type="text"], input[type="date"], textarea').forEach(el => el.value = '');
+  updateSummaryAndProgress();
+}
+function init(){
+  buildTabs();
+  buildPanels();
+  setLanguage(currentLang);
+  bindTabs();
+  restoreAutosaved();
+  bindAutosave();
+  setActiveTab(DATA.dimensions[0]?.id || 'summary');
+  updateSummaryAndProgress();
+}
+init();
+</script>
+</body>
+</html>
