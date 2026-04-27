@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Irakasleentzako Feedback Tresna</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe3ee;
+      --primary: #2563eb;
+      --primary-soft: #dbeafe;
+      --success: #059669;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(180deg, #eef4ff 0%, var(--bg) 35%, #f8fafc 100%);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 28px 20px 40px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 55%, #3b82f6 100%);
+      color: white;
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 3vw, 2.7rem);
+      line-height: 1.1;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 760px;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.92);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(219, 227, 238, 0.85);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 18px 20px 10px;
+    }
+
+    .card-header h2 {
+      margin: 0;
+      font-size: 1.15rem;
+    }
+
+    .card-header p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.96rem;
+      line-height: 1.5;
+    }
+
+    .card-body {
+      padding: 18px 20px 22px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 13px;
+      font: inherit;
+      color: var(--text);
+      background: #fff;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.08s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+      line-height: 1.55;
+    }
+
+    .section-title {
+      margin: 18px 0 12px;
+      font-size: 1rem;
+      font-weight: 800;
+      color: #111827;
+    }
+
+    .helper {
+      margin-top: 4px;
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+      font-size: 0.93rem;
+      color: #374151;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease;
+    }
+
+    .pill input {
+      width: auto;
+      margin: 0;
+      transform: translateY(1px);
+    }
+
+    .pill:hover {
+      background: #f9fbff;
+      border-color: #bfd2ff;
+    }
+
+    .criteria-table {
+      width: 100%;
+      border-collapse: collapse;
+      overflow: hidden;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .criteria-table th,
+    .criteria-table td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #edf2f7;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .criteria-table th {
+      font-size: 0.9rem;
+      color: #475569;
+      background: #f8fafc;
+    }
+
+    .criteria-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .criteria-table input,
+    .criteria-table select,
+    .criteria-table textarea {
+      border-radius: 10px;
+      padding: 10px 11px;
+      min-height: auto;
+    }
+
+    .criteria-table textarea {
+      min-height: 74px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 11px 15px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.08s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover { opacity: 0.96; }
+    button:active { transform: translateY(1px); }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.18);
+    }
+
+    .btn-soft {
+      background: var(--primary-soft);
+      color: #1d4ed8;
+    }
+
+    .btn-light {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .output {
+      background: linear-gradient(180deg, #f9fbff 0%, #ffffff 100%);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      min-height: 320px;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      font-size: 0.98rem;
+    }
+
+    .summary-box {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .mini {
+      border: 1px solid var(--line);
+      background: #fcfdff;
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .mini strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .status-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+
+    .small-btn {
+      padding: 9px 11px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: 1fr; }
+      .summary-box, .form-grid-3 { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .criteria-table, .criteria-table thead, .criteria-table tbody, .criteria-table tr, .criteria-table th, .criteria-table td {
+        display: block;
+        width: 100%;
+      }
+      .criteria-table thead { display: none; }
+      .criteria-table tr {
+        padding: 12px;
+        border-bottom: 1px solid #e5e7eb;
+      }
+      .criteria-table td {
+        padding: 8px 0;
+        border: none;
+      }
+      .criteria-table td::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #64748b;
+        margin-bottom: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>Irakasleentzako feedback emateko tresna</h1>
+      <p>
+        Tresna honek irakasleei aukera ematen die ikasleen lanari buruzko feedback zehatza,
+        eraikitzailea eta pertsonalizatua sortzeko. Egituratutako irizpideak, indarguneak,
+        hobekuntza-proposamenak eta hurrengo urratsak uztartzen ditu.
+      </p>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <div class="card-header">
+          <h2>1. Datu pedagogikoak eta ebaluazio-markoa</h2>
+          <p>Osatu oinarrizko informazioa, hautatu feedbackaren tonua eta zehaztu ebaluazio-irizpideak.</p>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="field">
+              <label for="studentName">Ikaslearen izena</label>
+              <input id="studentName" type="text" placeholder="Adib.: Ane Etxeberria" />
+            </div>
+            <div class="field">
+              <label for="group">Taldea / maila</label>
+              <input id="group" type="text" placeholder="Adib.: DBH 3A" />
+            </div>
+            <div class="field">
+              <label for="task">Ataza, proiektua edo jarduera</label>
+              <input id="task" type="text" placeholder="Adib.: Ahozko azalpena" />
+            </div>
+            <div class="field">
+              <label for="date">Data</label>
+              <input id="date" type="date" />
+            </div>
+          </div>
+
+          <div class="form-grid-3" style="margin-top: 14px;">
+            <div class="field">
+              <label for="tone">Feedbackaren tonua</label>
+              <select id="tone">
+                <option value="eraikitzailea">Eraikitzailea</option>
+                <option value="motibatzailea">Motibatzailea</option>
+                <option value="formala">Formala</option>
+                <option value="hurbila">Hurbila</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="globalLevel">Balorazio orokorra</label>
+              <select id="globalLevel">
+                <option value="oso ona">Oso ona</option>
+                <option value="ona">Ona</option>
+                <option value="nahikoa">Nahikoa</option>
+                <option value="hobetzekoa">Hobetzekoa</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="stage">Arloa / jakintza-eremua</label>
+              <input id="stage" type="text" placeholder="Adib.: Matematika" />
+            </div>
+          </div>
+
+          <h3 class="section-title">Gaitasun edo dimentsio nabarmenak</h3>
+          <div class="pill-row">
+            <label class="pill"><input type="checkbox" value="ulermena" class="dimension" /> Ulermena</label>
+            <label class="pill"><input type="checkbox" value="arrazoiketa" class="dimension" /> Arrazoiketa</label>
+            <label class="pill"><input type="checkbox" value="komunikazioa" class="dimension" /> Komunikazioa</label>
+            <label class="pill"><input type="checkbox" value="autonomia" class="dimension" /> Autonomia</label>
+            <label class="pill"><input type="checkbox" value="sormena" class="dimension" /> Sormena</label>
+            <label class="pill"><input type="checkbox" value="lankidetza" class="dimension" /> Lankidetza</label>
+            <label class="pill"><input type="checkbox" value="zehaztasuna" class="dimension" /> Zehaztasuna</label>
+            <label class="pill"><input type="checkbox" value="prozesuaren kudeaketa" class="dimension" /> Prozesuaren kudeaketa</label>
+          </div>
+
+          <h3 class="section-title">Ebaluazio-irizpideak</h3>
+          <table class="criteria-table" id="criteriaTable">
+            <thead>
+              <tr>
+                <th>Irizpidea</th>
+                <th>Lorpen-maila</th>
+                <th>Oharrak</th>
+                <th>Ekintza</th>
+              </tr>
+            </thead>
+            <tbody id="criteriaBody"></tbody>
+          </table>
+          <div class="actions">
+            <button class="btn-soft small-btn" id="addCriterion">+ Irizpide bat gehitu</button>
+            <button class="btn-light small-btn" id="loadExample">Adibideko irizpideak kargatu</button>
+          </div>
+
+          <h3 class="section-title">Idatzizko ekarpen osagarria</h3>
+          <div class="field">
+            <label for="strengths">Indarguneak</label>
+            <textarea id="strengths" placeholder="Zer egin du bereziki ondo? Zein elementu nabarmendu nahi dituzu?"></textarea>
+          </div>
+          <div class="field" style="margin-top: 12px;">
+            <label for="improvements">Hobetzeko alderdiak</label>
+            <textarea id="improvements" placeholder="Zein alderdi hobetu beharko lituzke? Zein puntutan behar du laguntza gehiago?"></textarea>
+          </div>
+          <div class="field" style="margin-top: 12px;">
+            <label for="nextSteps">Hurrengo urratsak</label>
+            <textarea id="nextSteps" placeholder="Zein gomendio zehatz emango zenizkioke hurrengo jarduerarako?"></textarea>
+            <div class="helper">Ahal dela, gomendioak espezifikoak, egingarriak eta ikaskuntzara bideratuak izan daitezela.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-header">
+          <h2>2. Feedbackaren sintesia</h2>
+          <p>Sortu testu osoa, kopiatu, esportatu edo inprimatu. Edukia automatikoki gordetzen da nabigatzailean.</p>
+        </div>
+        <div class="card-body">
+          <div class="status-row">
+            <span class="badge" id="saveStatus">● Edukia automatikoki gordetzen da</span>
+            <div class="actions" style="margin-top: 0;">
+              <button class="btn-primary" id="generateBtn">Feedbacka sortu</button>
+              <button class="btn-soft" id="copyBtn">Kopiatu</button>
+              <button class="btn-light" id="exportBtn">Esportatu .txt</button>
+              <button class="btn-light" id="printBtn">Inprimatu</button>
+              <button class="btn-danger" id="resetBtn">Garbitu</button>
+            </div>
+          </div>
+
+          <div class="summary-box">
+            <div class="mini">
+              <strong>Feedbackaren oinarriak</strong>
+              <div id="overviewBox">Oraindik ez da informaziorik sortu.</div>
+            </div>
+            <div class="mini">
+              <strong>Irizpideen laburpena</strong>
+              <div id="criteriaSummary">Irizpideak gehitu ondoren hemen agertuko dira.</div>
+            </div>
+          </div>
+
+          <h3 class="section-title">Azken testua</h3>
+          <div id="output" class="output">Hemen agertuko da sortutako feedback osoa.</div>
+          <div class="footer-note">
+            Gomendioa: feedbacka partekatu aurretik berrikusi, ikaslearen adinera, testuingurura eta
+            jardueraren helburu didaktikoetara egokitzeko.
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'irakasle-feedback-tresna-v1';
+    const criteriaBody = document.getElementById('criteriaBody');
+    const output = document.getElementById('output');
+    const overviewBox = document.getElementById('overviewBox');
+    const criteriaSummary = document.getElementById('criteriaSummary');
+    const saveStatus = document.getElementById('saveStatus');
+
+    function todayISO() {
+      const now = new Date();
+      const offset = now.getTimezoneOffset();
+      const local = new Date(now.getTime() - offset * 60000);
+      return local.toISOString().split('T')[0];
+    }
+
+    function criterionRow(data = {}) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td data-label="Irizpidea">
+          <input type="text" class="criterion-name" placeholder="Adib.: Edukiaren zehaztasuna" value="${escapeHtml(data.name || '')}" />
+        </td>
+        <td data-label="Lorpen-maila">
+          <select class="criterion-level">
+            ${['Bikaina', 'Ona', 'Nahikoa', 'Hobetzekoa'].map(level => `<option value="${level}" ${data.level === level ? 'selected' : ''}>${level}</option>`).join('')}
+          </select>
+        </td>
+        <td data-label="Oharrak">
+          <textarea class="criterion-note" placeholder="Irizpide honi buruzko ohar laburra">${escapeHtml(data.note || '')}</textarea>
+        </td>
+        <td data-label="Ekintza">
+          <button class="btn-danger small-btn remove-row">Ezabatu</button>
+        </td>
+      `;
+      tr.querySelector('.remove-row').addEventListener('click', () => {
+        tr.remove();
+        saveData();
+        refreshCriteriaSummary();
+      });
+      tr.querySelectorAll('input, select, textarea').forEach(el => {
+        el.addEventListener('input', () => {
+          saveData();
+          refreshCriteriaSummary();
+        });
+      });
+      criteriaBody.appendChild(tr);
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function getField(id) {
+      return document.getElementById(id).value.trim();
+    }
+
+    function checkedDimensions() {
+      return [...document.querySelectorAll('.dimension:checked')].map(el => el.value);
+    }
+
+    function getCriteria() {
+      return [...document.querySelectorAll('#criteriaBody tr')].map(row => ({
+        name: row.querySelector('.criterion-name').value.trim(),
+        level: row.querySelector('.criterion-level').value,
+        note: row.querySelector('.criterion-note').value.trim()
+      })).filter(item => item.name || item.note);
+    }
+
+    function toneIntro(tone) {
+      const map = {
+        eraikitzailea: 'Zure lanak aurrerapen interesgarriak erakusten ditu, eta hurrengo pausoei begira orientazio argia ematen du.',
+        motibatzailea: 'Ahalegina eta inplikazioa nabari dira, eta badira oinarri sendoak aurrera egiten jarraitzeko.',
+        formala: 'Azterturiko ekoizpenaren balorazio pedagogikoan ondoko alderdiak nabarmendu dira.',
+        hurbila: 'Egin duzun lana arretaz aztertu dut, eta hona hemen lagungarri izan daitezkeen zenbait ohar.'
+      };
+      return map[tone] || map.eraikitzailea;
+    }
+
+    function levelSentence(level) {
+      const map = {
+        'oso ona': 'Emaitza orokorra oso ona izan da eta helburu nagusiak sendotasunez bete dira.',
+        'ona': 'Emaitza orokorra ona izan da eta jardueraren helburu gehienak modu egokian lortu dira.',
+        'nahikoa': 'Emaitza orokorra nahikoa izan da; oinarrizko helburuak bete dira, nahiz eta hobekuntza-tartea egon.',
+        'hobetzekoa': 'Emaitza orokorrak erakusten du zenbait alderdi berrikusi eta sendotu behar direla, ikaskuntza finkatzeko.'
+      };
+      return map[level] || '';
+    }
+
+    function generateFeedback() {
+      const studentName = getField('studentName') || 'ikaslea';
+      const group = getField('group');
+      const task = getField('task');
+      const date = getField('date');
+      const tone = getField('tone');
+      const globalLevel = getField('globalLevel');
+      const stage = getField('stage');
+      const strengths = getField('strengths');
+      const improvements = getField('improvements');
+      const nextSteps = getField('nextSteps');
+      const dimensions = checkedDimensions();
+      const criteria = getCriteria();
+
+      const headerBits = [studentName];
+      if (group) headerBits.push(group);
+      if (task) headerBits.push(task);
+      if (stage) headerBits.push(stage);
+      const titleLine = `FEEDBACK PEDAGOGIKOA — ${headerBits.join(' · ')}`;
+
+      let text = `${titleLine}`;
+      if (date) text += `\nData: ${date}`;
+      text += `\n\n`;
+      text += `${toneIntro(tone)} ${levelSentence(globalLevel)}\n\n`;
+
+      if (dimensions.length) {
+        text += `Azpimarratzeko dimentsio nagusiak: ${dimensions.join(', ')}.\n\n`;
+      }
+
+      if (criteria.length) {
+        text += `Irizpideen araberako behaketa:\n`;
+        criteria.forEach((item, index) => {
+          const note = item.note ? ` ${item.note}` : '';
+          text += `${index + 1}. ${item.name || 'Irizpidea'} — ${item.level}.${note}\n`;
+        });
+        text += `\n`;
+      }
+
+      if (strengths) {
+        text += `Indarguneak:\n${strengths}\n\n`;
+      }
+
+      if (improvements) {
+        text += `Hobetzeko alderdiak:\n${improvements}\n\n`;
+      }
+
+      if (nextSteps) {
+        text += `Hurrengo urratsak:\n${nextSteps}\n\n`;
+      }
+
+      text += `Amaitzeko, garrantzitsua da egindako aurrerapena kontuan hartzea eta hurrengo jardueretan irizpide hauek modu kontzientean aplikatzen jarraitzea.`;
+
+      output.textContent = text;
+      refreshOverview();
+      refreshCriteriaSummary();
+      saveData();
+    }
+
+    function refreshOverview() {
+      const studentName = getField('studentName') || 'Izena zehaztu gabe';
+      const task = getField('task') || 'Jarduera zehaztu gabe';
+      const level = getField('globalLevel');
+      const tone = getField('tone');
+      const dims = checkedDimensions();
+      overviewBox.innerHTML = `
+        <div><strong>Ikaslea:</strong> ${escapeHtml(studentName)}</div>
+        <div><strong>Jarduera:</strong> ${escapeHtml(task)}</div>
+        <div><strong>Balorazio orokorra:</strong> ${escapeHtml(level)}</div>
+        <div><strong>Tonu komunikatiboa:</strong> ${escapeHtml(tone)}</div>
+        <div><strong>Dimentsioak:</strong> ${dims.length ? escapeHtml(dims.join(', ')) : 'Aukeratu gabe'}</div>
+      `;
+    }
+
+    function refreshCriteriaSummary() {
+      const criteria = getCriteria();
+      if (!criteria.length) {
+        criteriaSummary.textContent = 'Irizpideak gehitu ondoren hemen agertuko dira.';
+        return;
+      }
+      criteriaSummary.innerHTML = criteria.map(item => {
+        const note = item.note ? ` — ${escapeHtml(item.note)}` : '';
+        return `<div style="margin-bottom:8px;"><strong>${escapeHtml(item.name || 'Irizpidea')}</strong>: ${escapeHtml(item.level)}${note}</div>`;
+      }).join('');
+    }
+
+    function collectData() {
+      return {
+        studentName: getField('studentName'),
+        group: getField('group'),
+        task: getField('task'),
+        date: getField('date'),
+        tone: getField('tone'),
+        globalLevel: getField('globalLevel'),
+        stage: getField('stage'),
+        strengths: getField('strengths'),
+        improvements: getField('improvements'),
+        nextSteps: getField('nextSteps'),
+        dimensions: checkedDimensions(),
+        criteria: getCriteria(),
+        output: output.textContent
+      };
+    }
+
+    function saveData() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(collectData()));
+      saveStatus.textContent = '● Azken aldaketak gordeta';
+      window.clearTimeout(saveData._timer);
+      saveData._timer = window.setTimeout(() => {
+        saveStatus.textContent = '● Edukia automatikoki gordetzen da';
+      }, 1800);
+    }
+
+    function loadData() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        document.getElementById('date').value = todayISO();
+        criterionRow();
+        refreshOverview();
+        refreshCriteriaSummary();
+        return;
+      }
+      try {
+        const data = JSON.parse(raw);
+        ['studentName','group','task','date','tone','globalLevel','stage','strengths','improvements','nextSteps'].forEach(id => {
+          if (data[id] !== undefined && document.getElementById(id)) {
+            document.getElementById(id).value = data[id];
+          }
+        });
+        if (!data.date) document.getElementById('date').value = todayISO();
+        document.querySelectorAll('.dimension').forEach(el => {
+          el.checked = (data.dimensions || []).includes(el.value);
+        });
+        criteriaBody.innerHTML = '';
+        if (data.criteria && data.criteria.length) {
+          data.criteria.forEach(item => criterionRow(item));
+        } else {
+          criterionRow();
+        }
+        output.textContent = data.output || 'Hemen agertuko da sortutako feedback osoa.';
+      } catch {
+        document.getElementById('date').value = todayISO();
+        criterionRow();
+      }
+      refreshOverview();
+      refreshCriteriaSummary();
+    }
+
+    function exportTxt() {
+      const text = output.textContent.trim();
+      if (!text || text === 'Hemen agertuko da sortutako feedback osoa.') {
+        generateFeedback();
+      }
+      const finalText = output.textContent;
+      const blob = new Blob([finalText], { type: 'text/plain;charset=utf-8' });
+      const a = document.createElement('a');
+      const student = getField('studentName') || 'feedbacka';
+      const sanitized = student.toLowerCase().replace(/[^a-z0-9à-ÿ\-\s]/gi, '').trim().replace(/\s+/g, '-');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${sanitized || 'feedbacka'}.txt`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    async function copyOutput() {
+      const text = output.textContent.trim();
+      if (!text || text === 'Hemen agertuko da sortutako feedback osoa.') {
+        generateFeedback();
+      }
+      try {
+        await navigator.clipboard.writeText(output.textContent);
+        saveStatus.textContent = '● Feedbacka arbelean kopiatuta';
+        setTimeout(() => saveStatus.textContent = '● Edukia automatikoki gordetzen da', 1800);
+      } catch {
+        saveStatus.textContent = '● Ezin izan da kopiatu';
+        setTimeout(() => saveStatus.textContent = '● Edukia automatikoki gordetzen da', 1800);
+      }
+    }
+
+    function resetAll() {
+      if (!confirm('Ziur zaude edukia garbitu nahi duzula?')) return;
+      localStorage.removeItem(STORAGE_KEY);
+      ['studentName','group','task','strengths','improvements','nextSteps','stage'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('date').value = todayISO();
+      document.getElementById('tone').value = 'eraikitzailea';
+      document.getElementById('globalLevel').value = 'oso ona';
+      document.querySelectorAll('.dimension').forEach(el => el.checked = false);
+      criteriaBody.innerHTML = '';
+      criterionRow();
+      output.textContent = 'Hemen agertuko da sortutako feedback osoa.';
+      refreshOverview();
+      refreshCriteriaSummary();
+      saveStatus.textContent = '● Edukia garbituta';
+      setTimeout(() => saveStatus.textContent = '● Edukia automatikoki gordetzen da', 1800);
+    }
+
+    function loadExampleCriteria() {
+      criteriaBody.innerHTML = '';
+      [
+        { name: 'Edukiaren ulermena', level: 'Ona', note: 'Kontzeptu nagusiak zuzen azaldu ditu.' },
+        { name: 'Komunikazioaren argitasuna', level: 'Bikaina', note: 'Ideiak modu argi eta antolatuan aurkeztu ditu.' },
+        { name: 'Prozeduraren zehaztasuna', level: 'Nahikoa', note: 'Pauso gehienak egokiak dira, baina justifikazio batzuk falta dira.' }
+      ].forEach(item => criterionRow(item));
+      saveData();
+      refreshCriteriaSummary();
+    }
+
+    document.getElementById('addCriterion').addEventListener('click', () => {
+      criterionRow();
+      saveData();
+      refreshCriteriaSummary();
+    });
+
+    document.getElementById('loadExample').addEventListener('click', loadExampleCriteria);
+    document.getElementById('generateBtn').addEventListener('click', generateFeedback);
+    document.getElementById('copyBtn').addEventListener('click', copyOutput);
+    document.getElementById('exportBtn').addEventListener('click', exportTxt);
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
+    document.getElementById('resetBtn').addEventListener('click', resetAll);
+
+    document.querySelectorAll('input, select, textarea').forEach(el => {
+      el.addEventListener('input', () => {
+        refreshOverview();
+        saveData();
+      });
+    });
+
+    document.addEventListener('change', event => {
+      if (event.target.classList.contains('dimension')) {
+        refreshOverview();
+        saveData();
+      }
+    });
+
+    loadData();
+  </script>
+</body>
+</html>
