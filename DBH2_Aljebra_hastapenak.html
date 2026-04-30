@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DBH2 Aljebra orokortze gisa</title>
+<style>
+:root{--ink:#16324f;--accent:#2f6fab;--soft:#f6f8fb;--border:#d8e0ea;--g:#dff3e4;--b:#dfeffc;--ok:#0b7a2f;--no:#a33024;--warn:#fff7e8;--warnb:#f2d397}
+body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#fff;color:#1f2d3d}
+header{background:linear-gradient(90deg,#eaf4ff,#f7fbff);padding:24px 20px;border-bottom:1px solid var(--border)}
+h1{margin:0;color:var(--ink);font-size:28px} h2{color:var(--ink);margin:22px 0 10px}
+.wrap{max-width:1180px;margin:0 auto;padding:18px}.grid{display:grid;grid-template-columns:1.15fr 1fr;gap:20px}.card{background:var(--soft);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:18px}
+.history{background:var(--warn);border-color:var(--warnb)}
+.mini{font-size:14px;color:#4d5d6f}.formula{font-size:28px;font-weight:700;text-align:center;padding:12px;background:#fff;border-radius:10px;border:1px solid var(--border)}
+label{display:block;margin:10px 0 4px;font-weight:600} input[type=range],input[type=number],select,input[type=text]{width:100%;padding:8px;box-sizing:border-box;border:1px solid var(--border);border-radius:8px}
+button{background:var(--accent);color:#fff;border:none;padding:10px 16px;border-radius:10px;font-weight:700;cursor:pointer;margin-top:6px} button:hover{opacity:.94}
+.secondary{background:#fff;color:var(--accent);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;background:#fff;margin-top:8px} th,td{border:1px solid var(--border);padding:8px;text-align:center} th{background:#eef5ff}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.chip{width:42px;height:42px;border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px solid #b7c9dd;font-weight:bold}.green{background:var(--g)}.blue{background:var(--b)}
+.big{font-size:24px;font-weight:700;color:#173e67}.ok{color:var(--ok);font-weight:700}.no{color:var(--no);font-weight:700}.inline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.pill{display:inline-block;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);font-size:13px}.svgwrap{background:#fff;border:1px solid var(--border);border-radius:12px;padding:8px}
+.choices{display:grid;gap:8px}.choice{padding:10px 12px;background:#fff;border:1px solid var(--border);border-radius:10px;cursor:pointer}.choice:hover{background:#eef5ff}
+.hidden{display:none}.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.footer{font-size:12px;color:#667; margin-top:10px}
+@media (max-width:900px){.grid,.cols{grid-template-columns:1fr} h1{font-size:24px}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>DBH2 Aljebra orokortze gisa</h1></div></header>
+<div class="wrap"><div class="grid">
+<div>
+  <div class="card">
+    <h2>1. Egoera aukeratu</h2>
+    <label for="scenarioSelect">Praktikatzeko egoera</label>
+    <select id="scenarioSelect"></select>
+    <p id="scenarioText"></p>
+    <div class="inline mini"><span class="pill" id="basePill"></span><span class="pill" id="stepPill"></span></div>
+    <label for="n">Zenbat ekintza / unitate gehigarri daude?</label>
+    <input id="n" type="range" min="0" max="10" value="3">
+    <div class="mini">Balioa: <span id="nVal">3</span></div>
+    <div class="chips" id="chips"></div>
+    <div class="big"><span id="resultLabel"></span>: <span id="total"></span></div>
+  </div>
+
+  <div class="card history">
+    <h2>2. Historiaren zentzua</h2>
+    <p><strong>Aljebra</strong> ez da letrak jartzea bakarrik. Historian zehar, arau orokorrak adierazteko erabili da: <strong>ondarearen banaketan</strong>, <strong>merkataritzako kontaketetan</strong> eta <strong>neurketa- edo lursail-arazoetan</strong>.</p>
+    <p class="mini">Galdera gidaria: zer mantentzen da? zer aldatzen da? nola adieraz daiteke edozein kasu?</p>
+  </div>
+
+  <div class="card">
+    <h2>3. Formulara pasa</h2>
+    <div class="formula" id="formulaMain"></div>
+    <div class="cols">
+      <div><p><strong id="varX"></strong> = <span id="xDesc"></span></p></div>
+      <div><p><strong id="varY"></strong> = <span id="yDesc"></span></p></div>
+    </div>
+    <p class="mini" id="unknownExample"></p>
+  </div>
+
+  <div class="card">
+    <h2>4. Praktika azkarra</h2>
+    <button onclick="newQuestions()">Galdera berriak</button>
+    <p id="q1"></p><input id="a1" type="number"><button onclick="check1()">Egiaztatu</button><div id="r1" class="mini"></div>
+    <hr>
+    <p id="q2"></p><input id="a2" type="number"><button onclick="check2()">Egiaztatu</button><div id="r2" class="mini"></div>
+    <hr>
+    <p id="q3"></p><div id="choices3" class="choices"></div><div id="r3" class="mini"></div>
+  </div>
+</div>
+<div>
+  <div class="card">
+    <h2>5. Taula eta grafikoa</h2>
+    <p class="mini">Lehenengo ikasleek pentsatu eta osatu; ondoren, botoia erabiliz eredua egiaztatu.</p>
+    <div class="inline"><button id="toggleReveal" class="secondary" onclick="toggleReveal()">Erakutsi taula eta grafikoa</button></div>
+    <div id="revealZone" class="hidden">
+      <table id="tabla"><thead><tr><th id="thX"></th><th id="thY"></th></tr></thead><tbody></tbody></table>
+      <div class="svgwrap" style="margin-top:10px"><svg id="graph" width="100%" viewBox="0 0 420 280"></svg></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>6. Egoera gehiago praktikatzeko</h2>
+    <ul id="scenarioList"></ul>
+  </div>
+
+  <div class="card">
+    <h2>7. Transferentziarako sortzailea</h2>
+    <label for="contextName">Testuinguruaren izena</label><input id="contextName" type="text" value="egoera berria">
+    <label for="base">Zati finkoa</label><input id="base" type="number" min="0" max="10" value="4">
+    <label for="step">Bakoitzean zenbat gehitzen da</label><input id="step" type="number" min="1" max="5" value="1">
+    <div class="formula" id="newFormula"></div>
+    <p id="idea" class="mini"></p>
+    <div class="svgwrap hidden" id="customReveal"><svg id="graphCustom" width="100%" viewBox="0 0 420 280"></svg></div>
+    <button class="secondary" onclick="toggleCustom()">Erakutsi grafiko pertsonalizatua</button>
+  </div>
+</div>
+</div>
+<div class="footer">CC BY-NC-SA 4.0</div>
+</div>
+<script>
+const scenarios=[
+  {name:'Ongizate-pasaportea',base:5,step:1,xVar:'n',yVar:'P',xDesc:'jarduera gehigarrien kopurua',yDesc:'puntu guztiak',resultLabel:'Puntu guztiak',text:'Ikasle batek 5 puntu finko lor ditzake hamaiketako osasungarriagatik. Gainera, jarduera fisiko gehigarri bakoitzagatik puntu 1 gehiago lortzen du.',unknown:'5 + x = 8'},
+  {name:'Asteroko aurrezkia',base:4,step:1,xVar:'n',yVar:'E',xDesc:'aste gehigarrien kopurua',yDesc:'euro guztiak',resultLabel:'Euro guztiak',text:'Hasieran 4 euro daude aurrezki-kutxan. Aste bakoitzean euro 1 gehiago gehitzen da.',unknown:'4 + x = 7'},
+  {name:'Zereal-zakuak biltegian',base:3,step:2,xVar:'n',yVar:'Z',xDesc:'merkatu-egun kopurua',yDesc:'zaku guztiak',resultLabel:'Zaku guztiak',text:'Biltegi batean hasieran 3 zaku daude. Merkatu-egun bakoitzean 2 zaku gehiago iristen dira.',unknown:'3 + 2x = 9'},
+  {name:'Lursailaren mugarriak',base:2,step:2,xVar:'n',yVar:'M',xDesc:'zati berrien kopurua',yDesc:'mugarri guztiak',resultLabel:'Mugarri guztiak',text:'Lursail baten hasierako mugak markatzeko 2 mugarri daude. Zati berri bakoitza gehitzean 2 mugarri gehiago behar dira.',unknown:'2 + 2x = 8'}
+];
+let current=scenarios[0], ans1=0, ans2=0, q1n=0, q2target=0, correct3='';
+function $(id){return document.getElementById(id)}
+function init(){
+ const sel=$('scenarioSelect'); scenarios.forEach((s,i)=>{const op=document.createElement('option');op.value=i;op.textContent=s.name;sel.appendChild(op)});
+ sel.addEventListener('change',()=>{current=scenarios[Number(sel.value)];$('revealZone').classList.add('hidden');$('toggleReveal').textContent='Erakutsi taula eta grafikoa';renderAll();newQuestions()});
+ $('n').addEventListener('input',renderDynamic); ['base','step','contextName'].forEach(id=>$(id).addEventListener('input',renderTransfer));
+ renderScenarioList(); renderAll(); newQuestions(); renderTransfer();
+}
+function renderScenarioList(){const ul=$('scenarioList'); ul.innerHTML=''; scenarios.forEach(s=>{const li=document.createElement('li'); li.innerHTML=`<strong>${s.name}</strong>: ${s.yVar} = ${s.base} + ${s.step===1?'':s.step+'·'}${s.xVar}`; ul.appendChild(li)});}
+function renderAll(){ $('scenarioText').textContent=current.text; $('basePill').textContent=`Zati finkoa: ${current.base}`; $('stepPill').textContent=`Bakoitzean gehitzen da: ${current.step}`; $('resultLabel').textContent=current.resultLabel; $('formulaMain').textContent=`${current.yVar} = ${current.base} + ${current.step===1?'':current.step+'·'}${current.xVar}`; $('varX').textContent=current.xVar; $('varY').textContent=current.yVar; $('xDesc').textContent=current.xDesc; $('yDesc').textContent=current.yDesc; $('unknownExample').textContent=`Ezezagunaren adibidea: ${current.unknown}`; $('thX').textContent=current.xVar; $('thY').textContent=current.yVar; renderDynamic(); renderTable(); drawGraph('graph',current.base,current.step,current.xVar,current.yVar,10); }
+function renderDynamic(){ const n=Number($('n').value); $('nVal').textContent=n; $('total').textContent=current.base+current.step*n; const chips=$('chips'); chips.innerHTML=''; for(let i=0;i<current.base;i++){const c=document.createElement('div'); c.className='chip green'; c.textContent='1'; chips.appendChild(c)} for(let i=0;i<n;i++){const c=document.createElement('div'); c.className='chip blue'; c.textContent=String(current.step); chips.appendChild(c)} }
+function renderTable(){ const tb=document.querySelector('#tabla tbody'); tb.innerHTML=''; for(let i=0;i<=10;i++){const tr=document.createElement('tr'); tr.innerHTML=`<td>${i}</td><td>${current.base+current.step*i}</td>`; tb.appendChild(tr)} }
+function drawGraph(svgId,base,step,xLabel,yLabel,maxX){ const svg=$(svgId), W=420,H=280,pL=46,pR=16,pT=16,pB=34,w=W-pL-pR,h=H-pT-pB,maxY=base+step*maxX; let out=[]; out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="white"/>`); for(let i=0;i<=maxX;i++){const x=pL+(i/maxX)*w; out.push(`<line x1="${x}" y1="${pT}" x2="${x}" y2="${pT+h}" stroke="#eef2f7"/>`); out.push(`<text x="${x}" y="${H-12}" font-size="11" text-anchor="middle" fill="#596a7c">${i}</text>`)} for(let j=0;j<=maxY;j++){const y=pT+h-(j/maxY)*h; out.push(`<line x1="${pL}" y1="${y}" x2="${pL+w}" y2="${y}" stroke="#eef2f7"/>`); out.push(`<text x="${pL-10}" y="${y+4}" font-size="11" text-anchor="end" fill="#596a7c">${j}</text>`)} out.push(`<line x1="${pL}" y1="${pT}" x2="${pL}" y2="${pT+h}" stroke="#173e67" stroke-width="1.5"/>`); out.push(`<line x1="${pL}" y1="${pT+h}" x2="${pL+w}" y2="${pT+h}" stroke="#173e67" stroke-width="1.5"/>`); out.push(`<text x="${W-10}" y="${H-12}" font-size="12" text-anchor="end" fill="#173e67">${xLabel}</text>`); out.push(`<text x="18" y="18" font-size="12" fill="#173e67">${yLabel}</text>`); let pts=[]; for(let i=0;i<=maxX;i++){const yv=base+step*i; const x=pL+(i/maxX)*w, y=pT+h-(yv/maxY)*h; pts.push(`${x},${y}`)} out.push(`<polyline fill="none" stroke="#2f6fab" stroke-width="2.5" points="${pts.join(' ')}"/>`); for(let i=0;i<=maxX;i++){const yv=base+step*i; const x=pL+(i/maxX)*w, y=pT+h-(yv/maxY)*h; out.push(`<circle cx="${x}" cy="${y}" r="3.5" fill="#2f6fab"/>`)} svg.innerHTML=out.join(''); }
+function toggleReveal(){ const z=$('revealZone'); const btn=$('toggleReveal'); z.classList.toggle('hidden'); btn.textContent = z.classList.contains('hidden') ? 'Erakutsi taula eta grafikoa' : 'Ezkutatu taula eta grafikoa'; }
+function newQuestions(){ q1n=Math.floor(Math.random()*6); ans1=current.base+current.step*q1n; $('q1').textContent=`${current.xVar} = ${q1n} bada, zenbat da ${current.yVar}?`; $('a1').value=''; $('r1').textContent=''; const q2n=Math.floor(Math.random()*6); q2target=current.base+current.step*q2n; ans2=q2n; $('q2').textContent=`${current.yVar} = ${q2target} bada, zenbat da ${current.xVar}?`; $('a2').value=''; $('r2').textContent=''; const trueF=`${current.yVar} = ${current.base} + ${current.step===1?'':current.step+'·'}${current.xVar}`; const opts=[trueF,`${current.yVar} = ${current.base+1} + ${current.step===1?'':current.step+'·'}${current.xVar}`,`${current.yVar} = ${current.base} + ${current.step+1}·${current.xVar}`].sort(()=>Math.random()-0.5); correct3=trueF; $('q3').textContent='Zein da formula zuzena?'; const box=$('choices3'); box.innerHTML=''; $('r3').textContent=''; opts.forEach(opt=>{const d=document.createElement('div'); d.className='choice'; d.textContent=opt; d.onclick=()=>check3(opt); box.appendChild(d)}) }
+function check1(){ const v=Number($('a1').value); $('r1').innerHTML = v===ans1 ? `<span class="ok">Ondo!</span> ${current.yVar} = ${current.base} + ${current.step===1?'':current.step+'·'}${q1n}.` : `<span class="no">Berrikusi.</span> Gogoratu zati finkoa eta bakoitzean gehitzen dena.`; }
+function check2(){ const v=Number($('a2').value); $('r2').innerHTML = v===ans2 ? `<span class="ok">Ondo!</span> Ezezaguna aurkitu duzu.` : `<span class="no">Berrikusi.</span> ${q2target} = ${current.base} + ${current.step===1?'':current.step+'·'}${current.xVar}.`; }
+function check3(opt){ $('r3').innerHTML = opt===correct3 ? '<span class="ok">Ondo!</span> Formula zuzena da.' : '<span class="no">Ez da hori.</span> Begiratu zati finkoa eta aldaketa.'; }
+function renderTransfer(){ const base=Number($('base').value), step=Number($('step').value), name=$('contextName').value||'egoera berria'; $('newFormula').textContent=`E = ${base} + ${step}·n`; $('idea').textContent=`"${name}" testuinguruan, pentsatu zer izan daitekeen zati finkoa (${base}) eta zer gehitzen den bakoitzean (${step}).`; drawGraph('graphCustom',base,step,'n','E',10); }
+function toggleCustom(){ $('customReveal').classList.toggle('hidden'); }
+init();
+</script>
+</body>
+</html>
