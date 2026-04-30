@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DBH3 Ekuazio-sistemak modelizazio gisa</title>
+<style>
+ :root{--ink:#16324f;--accent:#2f6fab;--soft:#f6f8fb;--border:#d8e0ea;--g:#dff3e4;--b:#dfeffc;--ok:#0b7a2f;--no:#a33024;--warn:#fff7e8;--warnb:#f2d397}
+ body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#fff;color:#1f2d3d} header{background:linear-gradient(90deg,#eaf4ff,#f7fbff);padding:24px 20px;border-bottom:1px solid var(--border)}
+ h1{margin:0;color:var(--ink);font-size:28px} h2{color:var(--ink);margin:22px 0 10px}.wrap{max-width:1200px;margin:0 auto;padding:18px}.grid{display:grid;grid-template-columns:1.15fr 1fr;gap:20px}.card{background:var(--soft);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:18px}.history{background:var(--warn);border-color:var(--warnb)}
+ .mini{font-size:14px;color:#4d5d6f}.formula{font-size:28px;font-weight:700;text-align:center;padding:12px;background:#fff;border-radius:10px;border:1px solid var(--border);margin:8px 0} label{display:block;margin:10px 0 4px;font-weight:600} input[type=range],input[type=number],select,input[type=text]{width:100%;padding:8px;box-sizing:border-box;border:1px solid var(--border);border-radius:8px}
+ button{background:var(--accent);color:#fff;border:none;padding:10px 16px;border-radius:10px;font-weight:700;cursor:pointer;margin-top:6px} button:hover{opacity:.94}.secondary{background:#fff;color:var(--accent);border:1px solid var(--border)}
+ table{width:100%;border-collapse:collapse;background:#fff;margin-top:8px} th,td{border:1px solid var(--border);padding:8px;text-align:center} th{background:#eef5ff}.inline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.pill{display:inline-block;padding:4px 10px;border-radius:999px;background:#fff;border:1px solid var(--border);font-size:13px}
+ .chips{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.slot{width:42px;height:42px;border-radius:8px;display:flex;align-items:center;justify-content:center;border:1px solid #b7c9dd;font-weight:bold;background:#fff}.green{background:var(--g)}.blue{background:var(--b)}.ok{color:var(--ok);font-weight:700}.no{color:var(--no);font-weight:700}
+ .svgwrap{background:#fff;border:1px solid var(--border);border-radius:12px;padding:8px}.choices{display:grid;gap:8px}.choice{padding:10px 12px;background:#fff;border:1px solid var(--border);border-radius:10px;cursor:pointer}.choice:hover{background:#eef5ff}.hidden{display:none}.cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}.footer{font-size:12px;color:#667; margin-top:10px}
+ @media (max-width:900px){.grid,.cols{grid-template-columns:1fr} h1{font-size:24px}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>DBH3 Ekuazioak eta sistemak modelizazio gisa</h1></div></header>
+<div class="wrap"><div class="grid">
+<div>
+ <div class="card">
+  <h2>1. Egoera aukeratu</h2>
+  <label for="scenarioSelect">Praktikatzeko egoera</label><select id="scenarioSelect"></select>
+  <p id="scenarioText"></p>
+  <div class="inline mini"><span class="pill" id="pillTotal"></span><span class="pill" id="pillValue"></span></div>
+  <div class="cols"><div><label id="xLabel" for="xVal"></label><input id="xVal" type="range" min="-2" max="12" value="3"><div class="mini">Balioa: <span id="xNum"></span></div></div><div><label id="yLabel" for="yVal"></label><input id="yVal" type="range" min="-2" max="12" value="3"><div class="mini">Balioa: <span id="yNum"></span></div></div></div>
+  <div class="chips" id="chips"></div>
+  <div class="mini"><strong id="sumActs"></strong> <strong id="sumValue"></strong></div>
+  <div id="checkMsg" class="mini"></div>
+ </div>
+
+ <div class="card history">
+  <h2>2. Historiaren zentzua</h2>
+  <p><strong>Aljebra</strong> eta, bereziki, <strong>ekuazio-sistemak</strong>, historian zehar erabili dira baldintza anitzeko arazoak ebazteko: <strong>diruaren banaketan</strong>, <strong>lursailen neurketan</strong> eta <strong>merkataritzako kontaketetan</strong>.</p>
+ </div>
+
+ <div class="card">
+  <h2>3. Sistemara pasa</h2>
+  <div class="formula" id="eq1"></div>
+  <div class="formula" id="eq2"></div>
+  <div class="cols"><div><p><strong>x</strong> = <span id="xDesc"></span></p></div><div><p><strong>y</strong> = <span id="yDesc"></span></p></div></div>
+ </div>
+
+ <div class="card">
+  <h2>4. Praktika azkarra</h2>
+  <button onclick="newQuestions()">Galdera berriak</button>
+  <p id="q1"></p><input id="a1" type="text"><button onclick="check1()">Egiaztatu</button><div id="r1" class="mini"></div>
+  <hr>
+  <p id="q2"></p><div id="choices2" class="choices"></div><div id="r2" class="mini"></div>
+  <hr>
+  <p id="q3"></p><div id="choices3" class="choices"></div><div id="r3" class="mini"></div>
+ </div>
+</div>
+<div>
+ <div class="card">
+  <h2>5. Taula eta grafikoa</h2>
+  <p class="mini">Lehenengo konbinazioak probatu; ondoren, taula eta grafikoa erakutsi interpretazioa fintzeko.</p>
+  <button id="toggleReveal" class="secondary" onclick="toggleReveal()">Erakutsi taula eta grafikoa</button>
+  <div id="revealZone" class="hidden">
+   <table id="tabla"><thead><tr><th>x</th><th>y</th><th>x+y</th><th id="thValue"></th></tr></thead><tbody></tbody></table>
+   <div class="svgwrap" style="margin-top:10px"><svg id="graph" width="100%" viewBox="0 0 420 300"></svg></div>
+  </div>
+ </div>
+
+ <div class="card">
+  <h2>6. Egoera gehiago praktikatzeko</h2>
+  <ul id="scenarioList"></ul>
+ </div>
+
+ <div class="card">
+  <h2>7. Transferentziarako sortzailea</h2>
+  <label for="contextName">Testuinguruaren izena</label><input id="contextName" type="text" value="egoera berria">
+  <label for="totCustom">Guztira zenbat elementu?</label><input id="totCustom" type="number" min="2" max="12" value="6">
+  <label for="pXCustom">x motak zenbat balio du?</label><input id="pXCustom" type="number" min="-3" max="6" value="1">
+  <label for="pYCustom">y motak zenbat balio du?</label><input id="pYCustom" type="number" min="-3" max="6" value="2">
+  <label for="totalValueCustom">Balio guztira</label><input id="totalValueCustom" type="number" min="-20" max="40" value="8">
+  <div class="formula" id="customEq1"></div>
+  <div class="formula" id="customEq2"></div>
+  <p id="customIdea" class="mini"></p>
+  <div class="svgwrap hidden" id="customReveal"><svg id="graphCustom" width="100%" viewBox="0 0 420 300"></svg></div>
+  <button class="secondary" onclick="toggleCustom()">Erakutsi grafiko pertsonalizatua</button>
+ </div>
+</div>
+</div>
+<div class="footer">CC BY-NC-SA 4.0</div>
+</div>
+<script>
+const scenarios=[
+ {name:'Ibilaldiak eta entrenamenduak', text:'Ikasle batek 6 jarduera egin ditu guztira: ibilaldiak eta entrenamendu-saioak. Ibilaldi bakoitzak 1 ongizate-puntu ematen du, eta entrenamendu bakoitzak 2. Guztira 8 puntu lortu ditu.', total:6, px:1, py:2, valueLabel:'ongizate-puntuak', points:8, xName:'ibilaldiak', yName:'entrenamenduak', sol:[4,2]},
+ {name:'1 euroko eta 2 euroko txanponak', text:'Poltsa batean 7 txanpon daude guztira: 1 eurokoak eta 2 eurokoak. Guztira 10 euro daude. Zenbat txanpon daude mota bakoitzeko?', total:7, px:1, py:2, valueLabel:'euroak', points:10, xName:'1 euroko txanponak', yName:'2 euroko txanponak', sol:[4,3]},
+ {name:'Lursail txikiak eta handiak', text:'Nekazari batek 5 lursail ditu: txikiak eta handiak. Lursail txiki bakoitzak 2 hektarea ditu, eta handiak 3 hektarea. Guztira 12 hektarea dira.', total:5, px:2, py:3, valueLabel:'hektareak', points:12, xName:'lursail txikiak', yName:'lursail handiak', sol:[3,2]},
+ {name:'Zaku arinak eta astunak', text:'Biltegian 8 zaku daude: arinak eta astunak. Zaku arin bakoitzak 3 kg dauzka, eta astun bakoitzak 5 kg. Guztira 30 kg dira.', total:8, px:3, py:5, valueLabel:'kg', points:30, xName:'zaku arinak', yName:'zaku astunak', sol:[5,3]},
+ {name:'Ebakidura negatiboa ikusteko adibidea', text:'Adibide matematiko honetan x eta y bi magnitude dira. Baldintzak hauek dira: x + y = 4 eta x - y = 6. Grafikoan ikusiko duzu zuzenetako batek y ardatza balio negatiboan mozten duela.', total:4, px:1, py:-1, valueLabel:'balioa', points:6, xName:'x magnitudea', yName:'y magnitudea', sol:[5,-1]}
+];
+let current=scenarios[0], qAns1='', qAns2='', qAns3='';
+function $(id){return document.getElementById(id)}
+function init(){ const sel=$('scenarioSelect'); scenarios.forEach((s,i)=>{const op=document.createElement('option');op.value=i;op.textContent=s.name;sel.appendChild(op)}); sel.addEventListener('change',()=>{current=scenarios[Number(sel.value)];$('revealZone').classList.add('hidden');$('toggleReveal').textContent='Erakutsi taula eta grafikoa';renderAll();newQuestions()}); $('xVal').addEventListener('input',renderDynamic); $('yVal').addEventListener('input',renderDynamic); ['contextName','totCustom','pXCustom','pYCustom','totalValueCustom'].forEach(id=>$(id).addEventListener('input',renderCustom)); renderScenarioList(); renderAll(); newQuestions(); renderCustom(); }
+function renderScenarioList(){ const ul=$('scenarioList'); ul.innerHTML=''; scenarios.forEach(s=>{ const li=document.createElement('li'); li.innerHTML=`<strong>${s.name}</strong>: x + y = ${s.total} eta ${s.px}x + ${s.py}y = ${s.points}`; ul.appendChild(li); }); }
+function renderAll(){ $('scenarioText').textContent=current.text; $('pillTotal').textContent=`Guztira: ${current.total}`; $('pillValue').textContent=`${current.valueLabel}: ${current.points}`; $('xLabel').textContent=`Zenbat ${current.xName}?`; $('yLabel').textContent=`Zenbat ${current.yName}?`; $('xDesc').textContent=current.xName; $('yDesc').textContent=current.yName; $('eq1').textContent=`x + y = ${current.total}`; $('eq2').textContent=`${current.px}x + ${current.py}y = ${current.points}`; $('thValue').textContent=`${current.px}x + ${current.py}y`; $('xVal').value=current.sol[0]; $('yVal').value=current.sol[1]; renderDynamic(); renderTable(); drawSystem('graph',current.total,current.px,current.py,current.points); }
+function renderDynamic(){ const x=Number($('xVal').value), y=Number($('yVal').value); $('xNum').textContent=x; $('yNum').textContent=y; $('sumActs').textContent=`Guztira elementuak: ${x+y}`; const pts=current.px*x+current.py*y; $('sumValue').textContent=`${current.valueLabel}: ${pts}`; const chips=$('chips'); chips.innerHTML=''; const maxVisual = Math.max(0,Math.min(8,x+y)); for(let i=0;i<Math.max(0,Math.min(8,x));i++){const c=document.createElement('div'); c.className='slot green'; c.textContent='x'; chips.appendChild(c)} for(let i=0;i<Math.max(0,Math.min(8,y));i++){const c=document.createElement('div'); c.className='slot blue'; c.textContent='y'; chips.appendChild(c)} if(x+y>8){ const more=document.createElement('div'); more.className='mini'; more.textContent='…'; chips.appendChild(more); }
+ const ok1=x+y===current.total, ok2=pts===current.points; $('checkMsg').innerHTML=`${ok1?'<span class="ok">Lehen baldintza betetzen da.</span>':'<span class="no">Lehen baldintza ez da betetzen.</span>'} ${ok2?'<span class="ok">Bigarren baldintza ere betetzen da.</span>':'<span class="no">Bigarren baldintza ez da betetzen.</span>'}`; }
+function renderTable(){ const tb=document.querySelector('#tabla tbody'); tb.innerHTML=''; for(let x=-2;x<=Math.max(current.total+2,8);x++){ let y=current.total-x, pts=current.px*x+current.py*y; const mark=(pts===current.points); const tr=document.createElement('tr'); const style=mark?' style="background:#ecfff1"':''; tr.innerHTML=`<td${style}>${x}</td><td${style}>${y}</td><td${style}>${x+y}</td><td${style}>${pts}</td>`; tb.appendChild(tr)} }
+function drawSystem(svgId,total,px,py,points){
+ const svg=$(svgId),W=420,H=300,pL=46,pR=16,pT=16,pB=34,w=W-pL-pR,h=H-pT-pB;
+ const xMin=-2, xMax=Math.max(total+3,8);
+ // compute y range from both lines at x bounds and include solution if finite
+ function y1(x){return total-x}
+ function y2(x){return py===0 ? null : (points-px*x)/py}
+ let ys=[y1(xMin),y1(xMax)]; const y2a=y2(xMin), y2b=y2(xMax); if(y2a!==null) ys.push(y2a); if(y2b!==null) ys.push(y2b);
+ let solX=(px===py)? null : (points-py*total)/(px-py);
+ let solY=(solX===null)? null : total-solX; if(solY!==null){ ys.push(solY); }
+ let yMin=Math.floor(Math.min(...ys.filter(v=>Number.isFinite(v))))-1;
+ let yMax=Math.ceil(Math.max(...ys.filter(v=>Number.isFinite(v))))+1;
+ if(yMin===yMax){ yMin-=1; yMax+=1; }
+ function sx(x){ return pL + ((x-xMin)/(xMax-xMin))*w; }
+ function sy(y){ return pT + h - ((y-yMin)/(yMax-yMin))*h; }
+ let out=[]; out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="white"/>`);
+ for(let i=Math.ceil(xMin); i<=Math.floor(xMax); i++){ const x=sx(i); out.push(`<line x1="${x}" y1="${pT}" x2="${x}" y2="${pT+h}" stroke="#eef2f7"/>`); out.push(`<text x="${x}" y="${H-12}" font-size="11" text-anchor="middle" fill="#596a7c">${i}</text>`); }
+ for(let j=Math.ceil(yMin); j<=Math.floor(yMax); j++){ const y=sy(j); out.push(`<line x1="${pL}" y1="${y}" x2="${pL+w}" y2="${y}" stroke="#eef2f7"/>`); out.push(`<text x="${pL-10}" y="${y+4}" font-size="11" text-anchor="end" fill="#596a7c">${j}</text>`); }
+ // axes if visible
+ if(xMin<=0 && xMax>=0){ const ax=sx(0); out.push(`<line x1="${ax}" y1="${pT}" x2="${ax}" y2="${pT+h}" stroke="#173e67" stroke-width="1.5"/>`); }
+ if(yMin<=0 && yMax>=0){ const ay=sy(0); out.push(`<line x1="${pL}" y1="${ay}" x2="${pL+w}" y2="${ay}" stroke="#173e67" stroke-width="1.5"/>`); }
+ out.push(`<text x="${W-10}" y="${H-12}" font-size="12" text-anchor="end" fill="#173e67">x</text><text x="18" y="18" font-size="12" fill="#173e67">y</text>`);
+ // line1
+ let pts1=[]; for(let x=xMin;x<=xMax;x+=0.15){ pts1.push(`${sx(x)},${sy(y1(x))}`); }
+ out.push(`<polyline fill="none" stroke="#2f6fab" stroke-width="2.5" points="${pts1.join(' ')}"/>`);
+ // line2
+ if(py!==0){ let pts2=[]; for(let x=xMin;x<=xMax;x+=0.15){ pts2.push(`${sx(x)},${sy(y2(x))}`); }
+ out.push(`<polyline fill="none" stroke="#d9822b" stroke-width="2.5" points="${pts2.join(' ')}"/>`); }
+ if(solX!==null && Number.isFinite(solX) && Number.isFinite(solY) && solX>=xMin && solX<=xMax && solY>=yMin && solY<=yMax){ out.push(`<circle cx="${sx(solX)}" cy="${sy(solY)}" r="5" fill="#c5283d"/>`); out.push(`<text x="${sx(solX)+8}" y="${sy(solY)-8}" font-size="12" fill="#c5283d">(${Number(solX.toFixed(2))}, ${Number(solY.toFixed(2))})</text>`); }
+ svg.innerHTML=out.join('');
+}
+function toggleReveal(){ const z=$('revealZone'); z.classList.toggle('hidden'); $('toggleReveal').textContent = z.classList.contains('hidden') ? 'Erakutsi taula eta grafikoa' : 'Ezkutatu taula eta grafikoa'; }
+function newQuestions(){ $('q1').textContent='Zein da sistemaren soluzioa? Idatzi (x, y) moduan.'; $('a1').value=''; $('r1').textContent=''; qAns1=`(${current.sol[0]},${current.sol[1]})`; const opts2=[`(${current.sol[0]}, ${current.sol[1]}) bikoteak ${current.sol[0]} ${current.xName} eta ${current.sol[1]} ${current.yName} adierazten ditu.`, `(${current.sol[0]}, ${current.sol[1]}) bikoteak ${current.sol[1]} ${current.xName} eta ${current.sol[0]} ${current.yName} adierazten ditu.`, `(${current.sol[0]}, ${current.sol[1]}) bikoteak ez du testuinguruko esanahirik.`]; qAns2=opts2[0]; $('q2').textContent='Zein azalpen da zuzena?'; const b2=$('choices2'); b2.innerHTML=''; $('r2').textContent=''; opts2.sort(()=>Math.random()-0.5).forEach(opt=>{const d=document.createElement('div'); d.className='choice'; d.textContent=opt; d.onclick=()=>check2(opt); b2.appendChild(d)}); const opts3=['x = -1', 'x = 2', 'y = 3']; qAns3='x = -1'; $('q3').textContent='Zein emaitza ez litzateke testuinguru erreal batean baliozkoa izango?'; const b3=$('choices3'); b3.innerHTML=''; $('r3').textContent=''; opts3.sort(()=>Math.random()-0.5).forEach(opt=>{const d=document.createElement('div'); d.className='choice'; d.textContent=opt; d.onclick=()=>check3(opt); b3.appendChild(d)}); }
+function normalizePair(s){return s.replace(/\s+/g,'').replace(/;/g,',');}
+function check1(){ $('r1').innerHTML = normalizePair($('a1').value)===normalizePair(qAns1) ? '<span class="ok">Ondo!</span> Bi baldintzak batera betetzen dituen bikotea da.' : '<span class="no">Berrikusi.</span> Taulan edo grafikoan bilatu non betetzen diren bi baldintzak batera.'; }
+function check2(opt){ $('r2').innerHTML = opt===qAns2 ? '<span class="ok">Ondo!</span> Bikote ordenatua ondo interpretatu duzu.' : '<span class="no">Ez da hori.</span> Lehen osagaia x da eta bigarrena y.'; }
+function check3(opt){ $('r3').innerHTML = opt===qAns3 ? '<span class="ok">Ondo!</span> Emaitza negatiboak ez dira onargarriak testuinguru erreal gehienetan.' : '<span class="no">Berrikusi.</span> Pentsatu zer balio izan dezakeen jarduera edo objektu kopuru batek.'; }
+function renderCustom(){ const name=$('contextName').value||'egoera berria', tot=Number($('totCustom').value), px=Number($('pXCustom').value), py=Number($('pYCustom').value), pts=Number($('totalValueCustom').value); $('customEq1').textContent=`x + y = ${tot}`; $('customEq2').textContent=`${px}x + ${py}y = ${pts}`; let solX=(px===py)? null : (pts-py*tot)/(px-py), solY=(solX===null)? null : tot-solX; $('customIdea').textContent=`"${name}" testuinguruan, ikasleek aztertu behar dute ea soluzioa osoa eta ez-negatiboa den. Balizko emaitza: ${solX===null?'zehaztugabea':`(${Number(solX.toFixed(2))}, ${Number(solY.toFixed(2))})`}.`; drawSystem('graphCustom',tot,px,py,pts); }
+function toggleCustom(){ $('customReveal').classList.toggle('hidden'); }
+init();
+</script>
+</body>
+</html>
