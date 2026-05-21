@@ -201,9 +201,9 @@ GIPUZKOA;013597;IES Eibar BHI;Eibar;12;29`;
     const enteredRemaining=Math.max(0,target-enteredTotal);
     return {total,target,perGroup,groups,indMin,indMax,remaining,hobetuzCount,extraCount,activityCount,perActivity,enteredHobetuz,enteredExtra,enteredTotal,enteredRemaining};
   }
-  function studentCalcMessage(s){return `Ikastetxeko ikasleen %50a: <strong>${fmt0(s.target)}</strong> ikasle. He-Indartuz talde kopurua: <strong>${fmt0(s.groups)}</strong>; talde bakoitzeko <strong>${fmt0(s.perGroup)}</strong> ikasle aurreikusita, He-Indartuz bidez <strong>${fmt0(s.indMin)}</strong> ikasle kontatuko lirateke. Kontuz: ikasle bera jarduera batean baino gehiagotan badago, %50 kalkulurako behin bakarrik zenbatu behar da. Falta den orientaziozko kopurua: <strong>${fmt0(s.remaining)}</strong>. Jarduera kopurua: <strong>${fmt0(s.activityCount)}</strong>. Orientazio orokorra: jarduera bakoitzean batez beste <strong>${fmt0(s.perActivity)}</strong> ikasle bakar aurreikusi beharko lirateke. Une honetan sartuta: <strong>${fmt0(s.enteredTotal)}</strong> ikasle; helburura iristeko falta: <strong>${fmt0(s.enteredRemaining)}</strong>.`;}
+  function studentCalcMessage(s){return `Ikastetxeko ikasleen %50a: <strong>${fmt0(s.target)}</strong> ikasle. He-Indartuz talde kopurua: <strong>${fmt0(s.groups)}</strong>; talde bakoitzeko <strong>${fmt0(s.perGroup)}</strong> ikasle aurreikusita, He-Indartuz bidez <strong>${fmt0(s.indMin)}</strong> ikasle kontatuko lirateke. Kontuz: ikasle bera jarduera batean baino gehiagotan badago, %50 kalkulurako behin bakarrik zenbatu behar da. Jardueretan datuak sartu ahala, helburura iristeko falta diren ikasleak: <strong>${fmt0(s.enteredRemaining)}</strong>. Une honetan kontuan hartuta: <strong>${fmt0(s.enteredTotal)}</strong> ikasle. Hasierako orientaziozko faltakoa, daturik sartu aurretik: <strong>${fmt0(s.remaining)}</strong>. Jarduera kopurua: <strong>${fmt0(s.activityCount)}</strong>. Orientazio orokorra: jarduera bakoitzean batez beste <strong>${fmt0(s.perActivity)}</strong> ikasle bakar aurreikusi beharko lirateke.`;}
   function updateStudentCounters(){const s=calcStudents();const a=$('#studentsTargetKpi'),b=$('#studentsIndKpi'),c=$('#studentsRemainingKpi'),d=$('#studentsPerActivityKpi'),box=$('#studentCalcBox');if(a)a.textContent=fmt0(s.target);if(b)b.textContent=fmt0(s.indMin);if(c)c.textContent=fmt0(s.enteredRemaining);if(d)d.textContent=fmt0(s.perActivity);if(box)box.innerHTML=studentCalcMessage(s);}
-  function updateStudentLive(el){const [ti,ci]=el.dataset.course.split('-').map(Number);if(state.terms[ti]&&state.terms[ti].courses[ci]){state.terms[ti].courses[ci].students=Number(el.value)||'';save();updateStudentCounters();}}
+  function updateStudentLive(el){const [ti,ci]=el.dataset.course.split('-').map(Number);if(state.terms[ti]&&state.terms[ti].courses[ci]){state.terms[ti].c
   function renderStudents(){
     const s=calcStudents();
     $('#studentsTargetKpi').textContent=fmt0(s.target);
@@ -299,4 +299,3 @@ GIPUZKOA;013597;IES Eibar BHI;Eibar;12;29`;
 </script>
 </body>
 </html>
-
