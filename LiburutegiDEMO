@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="eu">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LiburutegiKIT Demoa</title>
+  <style>
+    :root{
+      --bg:#f6f7fb;
+      --card:#ffffff;
+      --ink:#172033;
+      --muted:#667085;
+      --line:#e4e7ec;
+      --accent:#3156d4;
+      --good:#087443;
+      --warn:#b54708;
+      --bad:#b42318;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      background:var(--bg);
+      color:var(--ink);
+    }
+    header{
+      background:linear-gradient(135deg,#172033,#3156d4);
+      color:white;
+      padding:32px 20px;
+    }
+    header .wrap, main{
+      max-width:1100px;
+      margin:auto;
+    }
+    h1{
+      margin:0;
+      font-size:clamp(1.8rem,3vw,3rem);
+    }
+    .subtitle{
+      margin-top:8px;
+      max-width:780px;
+      color:#e9ecff;
+      line-height:1.5;
+    }
+    main{
+      padding:22px 16px 40px;
+    }
+    .panel{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      box-shadow:0 8px 24px rgba(16,24,40,.06);
+      margin-bottom:18px;
+    }
+    .toolbar{
+      display:grid;
+      grid-template-columns:2fr 1fr 1fr;
+      gap:12px;
+    }
+    input, select, button{
+      width:100%;
+      padding:12px 14px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      font:inherit;
+      background:white;
+    }
+    button{
+      background:var(--accent);
+      color:white;
+      border:0;
+      cursor:pointer;
+      font-weight:650;
+    }
+    button.secondary{
+      background:#eef2ff;
+      color:#273a93;
+    }
+    .tabs{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:18px;
+    }
+    .tab{
+      width:auto;
+      padding:10px 14px;
+      border-radius:999px;
+      background:white;
+      color:var(--ink);
+      border:1px solid var(--line);
+    }
+    .tab.active{
+      background:var(--accent);
+      color:white;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:14px;
+    }
+    .book{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      min-height:250px;
+      box-shadow:0 6px 18px rgba(16,24,40,.05);
+    }
+    .cover{
+      width:58px;
+      height:78px;
+      border-radius:10px;
+      background:linear-gradient(135deg,#ffd89b,#19547b);
+      color:white;
+      display:grid;
+      place-items:center;
+      font-weight:800;
+      font-size:1.2rem;
+    }
+    .book-head{
+      display:flex;
+      gap:13px;
+      align-items:flex-start;
+    }
+    .book h3{
+      margin:0;
+      font-size:1.05rem;
+      line-height:1.25;
+    }
+    .meta{
+      color:var(--muted);
+      font-size:.92rem;
+      line-height:1.35;
+    }
+    .chips{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+    .chip{
+      padding:5px 9px;
+      border-radius:999px;
+      background:#f2f4f7;
+      color:#344054;
+      font-size:.82rem;
+      font-weight:600;
+    }
+    .status{
+      margin-top:auto;
+      padding:10px;
+      border-radius:12px;
+      background:#f9fafb;
+      border:1px solid var(--line);
+      font-size:.93rem;
+    }
+    .free{color:var(--good);font-weight:800}
+    .loan{color:var(--warn);font-weight:800}
+    .none{color:var(--bad);font-weight:800}
+    table{
+      width:100%;
+      border-collapse:collapse;
+      overflow:hidden;
+      border-radius:14px;
+    }
+    th,td{
+      text-align:left;
+      border-bottom:1px solid var(--line);
+      padding:12px 10px;
+      vertical-align:top;
+    }
+    th{
+      color:#344054;
+      background:#f9fafb;
+      font-size:.9rem;
+    }
+    .small{
+      font-size:.9rem;
+      color:var(--muted);
+      line-height:1.45;
+    }
+    .hidden{display:none}
+    @media(max-width:720px){
+      .toolbar{grid-template-columns:1fr}
+      th:nth-child(3),td:nth-child(3){display:none}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>LiburutegiKIT Demoa</h1>
+      <p class="subtitle">
+        Ikastetxeko liburutegia kudeatzeko prototipo txikia: ikasleek katalogoa kontsultatzen dute;
+        irakasleek aleen egoera, maileguak eta itzulera-datak kudeatzen dituzte.
+      </p>
+    </div>
+  </header>
+
+  <main>
+    <div class="tabs" aria-label="ikuspegiak">
+      <button class="tab active" onclick="showTab('katalogoa', this)">Ikasleen katalogoa</button>
+      <button class="tab" onclick="showTab('kudeaketa', this)">Irakasleen kudeaketa</button>
+      <button class="tab" onclick="showTab('proposamena', this)">Aurkezpenerako mezua</button>
+    </div>
+
+    <section id="katalogoa">
+      <div class="panel">
+        <div class="toolbar">
+          <input id="search" placeholder="Bilatu izenburua, egilea edo gaia..." oninput="renderBooks()" />
+          <select id="level" onchange="renderBooks()">
+            <option value="">Maila guztiak</option>
+            <option>LH 5-6</option>
+            <option>DBH 1-2</option>
+            <option>DBH 3-4</option>
+            <option>Batxilergoa</option>
+          </select>
+          <select id="language" onchange="renderBooks()">
+            <option value="">Hizkuntza guztiak</option>
+            <option>Euskara</option>
+            <option>Gaztelania</option>
+            <option>Ingelesa</option>
+          </select>
+        </div>
+        <p class="small">
+          Ikasleentzako ikuspegian ez da agertzen nork duen liburua: soilik eskuragarritasuna eta hurrengo itzulera-data.
+        </p>
+      </div>
+      <div id="books" class="grid"></div>
+    </section>
+
+    <section id="kudeaketa" class="hidden">
+      <div class="panel">
+        <h2>Mailegu aktiboak</h2>
+        <p class="small">
+          Hau maketa bat da. Benetako bertsioan datuak Google Sheet batean egongo lirateke, eta irakasleek login bidez kudeatuko lukete.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Alea</th>
+              <th>Liburua</th>
+              <th>Ikaslea/Taldea</th>
+              <th>Epemuga</th>
+              <th>Ekintza</th>
+            </tr>
+          </thead>
+          <tbody id="loans"></tbody>
+        </table>
+      </div>
+
+      <div class="panel">
+        <h2>Mailegu berria simulatu</h2>
+        <div class="toolbar">
+          <select id="loanBook"></select>
+          <input id="reader" placeholder="Irakurlearen kodea edo izena, adib. DBH2-014" />
+          <button onclick="simulateLoan()">Mailegua egin</button>
+        </div>
+        <p id="adminMsg" class="small"></p>
+      </div>
+    </section>
+
+    <section id="proposamena" class="hidden">
+      <div class="panel">
+        <h2>Aurkezpenerako ideia nagusia</h2>
+        <p>
+          Prototipo honek erakusten du ikastetxeko liburutegia kudeatzeko sistema sinple bat egin daitekeela,
+          irakasleentzat erabilerraza eta ikasleentzat gardena dena.
+        </p>
+        <ul>
+          <li><strong>Ikasleek</strong> katalogoa bilatzen dute eta ale librerik dagoen ikusten dute.</li>
+          <li><strong>Irakasleek</strong> maileguak, itzulerak eta aleen egoera kudeatzen dituzte.</li>
+          <li><strong>Ikastetxeak</strong> datuak Google Sheet batean zentralizatuta mantentzen ditu.</li>
+          <li><strong>Pribatutasuna</strong> zaintzen da: ikasleen datuak ez dira katalogo publikoan erakusten.</li>
+        </ul>
+        <p>
+          Hurrengo urratsa litzateke Google Sheets + Apps Script bidez bertsio funtzional txiki bat egitea,
+          QR kodeekin eta benetako mailegu-erregistroarekin.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const books = [
+      {id:"L001", title:"Momo", author:"Michael Ende", level:"DBH 1-2", lang:"Euskara", topic:"Fantasia", total:3, free:1, next:"2026-10-03"},
+      {id:"L002", title:"Printze Txikia", author:"Antoine de Saint-Exupéry", level:"LH 5-6", lang:"Euskara", topic:"Klasikoa", total:5, free:4, next:null},
+      {id:"L003", title:"Wonder", author:"R. J. Palacio", level:"DBH 1-2", lang:"Gaztelania", topic:"Bizikidetza", total:2, free:0, next:"2026-09-27"},
+      {id:"L004", title:"1984", author:"George Orwell", level:"Batxilergoa", lang:"Gaztelania", topic:"Distopia", total:2, free:1, next:"2026-10-11"},
+      {id:"L005", title:"The Curious Incident of the Dog in the Night-Time", author:"Mark Haddon", level:"DBH 3-4", lang:"Ingelesa", topic:"Nobela", total:4, free:2, next:null},
+      {id:"L006", title:"Amona, zure Iholdi", author:"Mariasun Landa", level:"LH 5-6", lang:"Euskara", topic:"Familia", total:3, free:0, next:"2026-09-30"}
+    ];
+
+    let loans = [
+      {copy:"A-001", book:"Momo", reader:"DBH1-023", due:"2026-10-03"},
+      {copy:"A-014", book:"Wonder", reader:"DBH2-014", due:"2026-09-27"},
+      {copy:"A-022", book:"Amona, zure Iholdi", reader:"LH6-008", due:"2026-09-30"}
+    ];
+
+    function statusText(book){
+      if(book.free > 1) return `<span class="free">${book.free} ale libre</span> / ${book.total} guztira`;
+      if(book.free === 1) return `<span class="free">Ale 1 libre</span> / ${book.total} guztira`;
+      return `<span class="none">Ez dago alerik libre</span><br>Hurrengo itzulera: ${formatDate(book.next)}`;
+    }
+
+    function formatDate(iso){
+      if(!iso) return "—";
+      const d = new Date(iso + "T00:00:00");
+      return d.toLocaleDateString("eu-ES", {year:"numeric", month:"long", day:"numeric"});
+    }
+
+    function renderBooks(){
+      const q = document.getElementById("search").value.toLowerCase();
+      const level = document.getElementById("level").value;
+      const lang = document.getElementById("language").value;
+      const filtered = books.filter(b =>
+        (!q || [b.title,b.author,b.topic].join(" ").toLowerCase().includes(q)) &&
+        (!level || b.level === level) &&
+        (!lang || b.lang === lang)
+      );
+
+      document.getElementById("books").innerHTML = filtered.map(b => `
+        <article class="book">
+          <div class="book-head">
+            <div class="cover">${b.title.slice(0,1)}</div>
+            <div>
+              <h3>${b.title}</h3>
+              <div class="meta">${b.author}</div>
+            </div>
+          </div>
+          <div class="chips">
+            <span class="chip">${b.level}</span>
+            <span class="chip">${b.lang}</span>
+            <span class="chip">${b.topic}</span>
+          </div>
+          <div class="meta">Kokapena: Apalategia ${b.id.slice(-1)} · Kodea: ${b.id}</div>
+          <div class="status">${statusText(b)}</div>
+        </article>
+      `).join("") || `<div class="panel">Ez da emaitzarik aurkitu.</div>`;
+    }
+
+    function renderLoans(){
+      document.getElementById("loans").innerHTML = loans.map((l, i)=>`
+        <tr>
+          <td>${l.copy}</td>
+          <td>${l.book}</td>
+          <td>${l.reader}</td>
+          <td>${formatDate(l.due)}</td>
+          <td><button class="secondary" onclick="returnLoan(${i})">Itzulera</button></td>
+        </tr>
+      `).join("");
+      document.getElementById("loanBook").innerHTML = books
+        .map(b=>`<option value="${b.id}">${b.title} (${b.free} libre)</option>`)
+        .join("");
+    }
+
+    function simulateLoan(){
+      const id = document.getElementById("loanBook").value;
+      const reader = document.getElementById("reader").value.trim() || "DBH-000";
+      const book = books.find(b => b.id === id);
+      const msg = document.getElementById("adminMsg");
+      if(book.free <= 0){
+        msg.innerHTML = `Ezin da mailegua egin: <strong>${book.title}</strong> liburuak ez du ale librerik.`;
+        return;
+      }
+      book.free -= 1;
+      const due = new Date();
+      due.setDate(due.getDate() + 21);
+      loans.push({copy:`A-${Math.floor(Math.random()*900+100)}`, book:book.title, reader, due:due.toISOString().slice(0,10)});
+      msg.innerHTML = `Mailegua erregistratu da: <strong>${book.title}</strong> → ${reader}.`;
+      renderBooks();
+      renderLoans();
+    }
+
+    function returnLoan(index){
+      const loan = loans[index];
+      const book = books.find(b => b.title === loan.book);
+      if(book) book.free += 1;
+      loans.splice(index,1);
+      renderBooks();
+      renderLoans();
+    }
+
+    function showTab(id, el){
+      ["katalogoa","kudeaketa","proposamena"].forEach(t => document.getElementById(t).classList.add("hidden"));
+      document.getElementById(id).classList.remove("hidden");
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      el.classList.add("active");
+    }
+
+    renderBooks();
+    renderLoans();
+  </script>
+</body>
+</html>
